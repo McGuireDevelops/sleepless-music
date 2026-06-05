@@ -1,26 +1,179 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #080f1a;
+  --navy-mid: #0d1528;
+  --gold: #d4a853;
+  --amber: #c9782e;
+  --sand: #e8dcc8;
+  --site-header-offset: calc(env(safe-area-inset-top, 0px) + 3.5rem);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 40rem) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --site-header-offset: calc(env(safe-area-inset-top, 0px) + 4rem);
   }
 }
 
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-mid: var(--navy-mid);
+  --color-gold: var(--gold);
+  --color-amber: var(--amber);
+  --color-sand: var(--sand);
+  --font-display: var(--font-cormorant);
+  --font-sans: var(--font-dm-sans);
+}
+
+html {
+  scroll-behavior: auto;
+  scroll-padding-top: var(--site-header-offset);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.site-header {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.mobile-menu-panel {
+  top: var(--site-header-offset);
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--navy);
+  color: var(--sand);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-cormorant), "Times New Roman", serif;
+}
+
+.nav-menu-checkbox {
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-icon-close {
+  display: none;
+}
+
+html:has(#nav-menu-toggle:checked) {
+  overflow: hidden;
+}
+
+html:has(#nav-menu-toggle:checked) .nav-icon-open {
+  display: none;
+}
+
+html:has(#nav-menu-toggle:checked) .nav-icon-close {
+  display: block;
+}
+
+html:has(#nav-menu-toggle:checked) #mobile-menu {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#music,
+#work,
+#about,
+#contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 40rem;
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 28%;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  @keyframes reveal-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@supports not (animation-timeline: view()) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-height: 32rem) and (orientation: landscape) {
+  .hero-copy {
+    top: 44%;
+  }
+
+  .hero-title {
+    font-size: clamp(1.75rem, 14vh, 2.75rem) !important;
+    line-height: 1;
+  }
+
+  .hero-copy p {
+    margin-top: 0.375rem;
+  }
+
+  .hero-copy p:first-child {
+    margin-bottom: 0.375rem;
+  }
+
+  .hero-cta {
+    bottom: 0.75rem;
+  }
+
+  .hero-cta a {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .hero-scroll {
+    display: none;
+  }
+}
+
+@media (max-width: 40rem) and (orientation: portrait) {
+  .hero-cta {
+    bottom: 9.5rem;
+  }
+
+  .hero-scroll {
+    bottom: 2rem;
+    padding-top: 0.625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .mobile-menu-panel {
+    transition: none;
+  }
 }

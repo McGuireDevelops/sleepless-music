@@ -6,9 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate:favicons": "node scripts/generate-favicons.mjs",
+    "generate:images": "node scripts/generate-images.mjs",
+    "generate:assets": "npm run generate:images && npm run generate:favicons"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "next": "16.2.7",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -20,6 +25,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
+    "satori": "^0.26.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

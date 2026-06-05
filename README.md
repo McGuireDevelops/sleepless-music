@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sleepless Music
 
-## Getting Started
+Cinematic composer website for Robert McGuire, built with Next.js and deployed on Vercel.
 
-First, run the development server:
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit copy, credits, and URLs in [`lib/site.ts`](lib/site.ts).
 
-## Learn More
+### ReelCrafter embed
 
-To learn more about Next.js, take a look at the following resources:
+1. Open your reel in ReelCrafter → Embed → Create → Copy Code
+2. Paste the iframe `src` URL into `reelcrafterEmbedSrc` in `lib/site.ts`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Social links
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Add URLs to `site.social` in `lib/site.ts` (LinkedIn, Instagram, Spotify).
 
-## Deploy on Vercel
+## Assets
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Regenerate hero, OG share image, and favicons:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run generate:assets
+```
+
+Commit the outputs under `public/` and `app/favicon.ico`.
+
+## Deploy (Vercel)
+
+This is a **separate** Vercel project from `april-28-film`.
+
+```bash
+vercel link    # create new project: sleepless-music
+vercel deploy  # preview
+vercel --prod  # production
+```
+
+## Domain cutover (sleeplessmusic.com)
+
+When ready to replace WordPress:
+
+1. Deploy and verify on a Vercel preview URL
+2. In Vercel → Project → Domains, add `sleeplessmusic.com` and `www.sleeplessmusic.com`
+3. Update DNS at your registrar (Vercel will show A/CNAME records)
+4. `vercel.json` already redirects apex → `www` and old WP paths → anchors
+5. Keep WordPress live until DNS propagates, then cancel WP hosting
+
+## Stack
+
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS 4
+- Vercel Analytics + Speed Insights

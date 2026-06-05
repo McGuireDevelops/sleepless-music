@@ -1,0 +1,25 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "sleeplessmusic.com" }],
+      "destination": "https://www.sleeplessmusic.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/#about",
+      "permanent": true
+    },
+    {
+      "source": "/music",
+      "destination": "/#music",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/#contact",
+      "permanent": true
+    }
+  ]
+}
