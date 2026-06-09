@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   type CSSProperties,
   useCallback,
@@ -13,7 +14,7 @@ type ScreenState = "off" | "powering" | "no-signal" | "playing" | "paused";
 
 const POWER_ON_MS = 1100;
 const OSD_MS = 2200;
-const VU_BARS = 12;
+const VU_BARS = 14;
 
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -25,6 +26,7 @@ function formatTime(seconds: number): string {
 export function TvPlayer() {
   const tracks = site.tracks;
   const hasTracks = tracks.length > 0;
+  const rect = site.tvScreenRect;
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -64,7 +66,6 @@ export function TvPlayer() {
     };
   }, []);
 
-  // Apply volume to the media element (perceptual curve).
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) audio.volume = volume * volume;
@@ -141,7 +142,6 @@ export function TvPlayer() {
     try {
       await audio.play();
     } catch {
-      // Autoplay restrictions or missing file — surface paused state.
       setScreen((s) => (s === "playing" ? "paused" : s));
     }
   }, [ensureAnalyser]);
@@ -184,16 +184,10 @@ export function TvPlayer() {
   const changeTrack = useCallback(
     (dir: 1 | -1) => {
       if (!hasTracks) return;
-      setCurrentIndex((prev) => {
-        const next = (prev + dir + tracks.length) % tracks.length;
-        return next;
-      });
+      setCurrentIndex((prev) => (prev + dir + tracks.length) % tracks.length);
       flashOsd();
-      if (!isOn) {
-        powerOnAndPlay();
-      } else {
-        setScreen("playing");
-      }
+      if (!isOn) powerOnAndPlay();
+      else setScreen("playing");
     },
     [hasTracks, tracks.length, flashOsd, isOn, powerOnAndPlay],
   );
@@ -209,7 +203,6 @@ export function TvPlayer() {
     stopVuLoop();
   }, [stopVuLoop]);
 
-  // When the track index changes while powered, load + play the new source.
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !hasTracks) return;
@@ -220,14 +213,12 @@ export function TvPlayer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
-  // Drive the VU loop based on play state.
   useEffect(() => {
     if (isPlaying) startVuLoop();
     else stopVuLoop();
     return () => cancelAnimationFrame(rafRef.current);
   }, [isPlaying, startVuLoop, stopVuLoop]);
 
-  // Pause the VU loop when the tab is hidden.
   useEffect(() => {
     const onVisibility = () => {
       if (document.hidden) cancelAnimationFrame(rafRef.current);
@@ -273,6 +264,13 @@ export function TvPlayer() {
   const volumeAngle = -135 + volume * 270;
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
+  const screenStyle: CSSProperties = {
+    top: `${rect.top}%`,
+    left: `${rect.left}%`,
+    width: `${rect.width}%`,
+    height: `${rect.height}%`,
+  };
+
   return (
     <div
       className={`tv-player ${reducedMotion ? "tv-player--reduced" : ""}`}
@@ -286,202 +284,165 @@ export function TvPlayer() {
           preload="none"
           crossOrigin="anonymous"
           onPlay={() => setScreen("playing")}
-          onPause={() =>
-            setScreen((s) => (s === "playing" ? "paused" : s))
-          }
+          onPause={() => setScreen((s) => (s === "playing" ? "paused" : s))}
           onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
           onEnded={() => changeTrack(1)}
         />
       )}
 
-      {/* ── Television cabinet ── */}
-      <div className="tv-cabinet">
-        <div className="tv-bezel">
-          <div className="tv-screen">
-            <button
-              type="button"
-              className="tv-screen__surface"
-              onClick={togglePlay}
-              aria-label={
-                isPlaying ? "Pause" : isOn ? "Play" : "Power on and play"
-              }
-            >
-              {/* Static / no-signal layer */}
-              <span className="tv-static" aria-hidden />
+      {/* ── Photoreal scene with live CRT overlay ── */}
+      <div className="tv-scene">
+        <Image
+          src={site.tvScene}
+          alt="Vintage television in a dark listening room"
+          width={1536}
+          height={1024}
+          className="tv-scene__img"
+          sizes="(max-width: 48rem) 100vw, 64rem"
+          priority={false}
+        />
 
-              {/* Broadcast content */}
-              <span className="tv-broadcast" aria-hidden>
-                <span className="tv-broadcast__bars">
-                  {levels.map((lvl, i) => (
-                    <span
-                      key={i}
-                      className="tv-broadcast__bar"
-                      style={
-                        { "--lvl": lvl.toFixed(3) } as CSSProperties
-                      }
-                    />
-                  ))}
-                </span>
-              </span>
+        <button
+          type="button"
+          className="crt"
+          style={screenStyle}
+          onClick={togglePlay}
+          aria-label={isPlaying ? "Pause" : isOn ? "Play" : "Power on and play"}
+        >
+          <span className="crt__static" aria-hidden />
 
-              {/* OSD: track number, top-left */}
-              <span
-                className={`tv-osd ${osdVisible || isPlaying ? "tv-osd--visible" : ""}`}
-                aria-hidden
-              >
-                TRACK {trackNumber}
-              </span>
-
-              {/* Lower-third chyron */}
-              {isOn && screen !== "powering" && (
-                <span className="tv-chyron" aria-hidden>
-                  <span className="tv-chyron__label">Now Playing</span>
-                  <span className="tv-chyron__title">
-                    {currentTrack?.title}
-                  </span>
-                </span>
-              )}
-
-              {/* No-signal / press play CTA */}
-              {(screen === "off" || screen === "no-signal") && (
-                <span className="tv-cta" aria-hidden>
-                  <span className="tv-cta__icon">▶</span>
-                  <span className="tv-cta__text">
-                    {hasTracks ? "Press Play" : "No Signal"}
-                  </span>
-                </span>
-              )}
-
-              {/* Glass + scanlines + glare */}
-              <span className="tv-glass" aria-hidden />
-              <span className="tv-scanlines" aria-hidden />
-              <span className="tv-glare" aria-hidden />
-              {screen === "powering" && (
-                <span className="tv-powerline" aria-hidden />
-              )}
-            </button>
-          </div>
-
-          {/* Right-side speaker + brand */}
-          <div className="tv-sidebar" aria-hidden>
-            <span className="tv-brand">SLEEPLESS</span>
-            <span className="tv-speaker" />
-            <span className="tv-vu" aria-hidden>
-              {levels.slice(0, 5).map((lvl, i) => (
+          <span className="crt__broadcast" aria-hidden>
+            <span className="crt__bars">
+              {levels.map((lvl, i) => (
                 <span
                   key={i}
-                  className="tv-vu__seg"
+                  className="crt__bar"
                   style={{ "--lvl": lvl.toFixed(3) } as CSSProperties}
                 />
               ))}
             </span>
-          </div>
+          </span>
+
+          <span
+            className={`crt__osd ${osdVisible || isPlaying ? "crt__osd--visible" : ""}`}
+            aria-hidden
+          >
+            TRACK {trackNumber}
+          </span>
+
+          {(screen === "playing" || screen === "paused") && (
+            <span className="crt__chyron" aria-hidden>
+              <span className="crt__chyron-label">Now Playing</span>
+              <span className="crt__chyron-title">{currentTrack?.title}</span>
+            </span>
+          )}
+
+          {(screen === "off" || screen === "no-signal") && (
+            <span className="crt__cta" aria-hidden>
+              <span className="crt__cta-icon">▶</span>
+              <span className="crt__cta-text">
+                {hasTracks ? "Press Play" : "No Signal"}
+              </span>
+            </span>
+          )}
+
+          <span className="crt__scanlines" aria-hidden />
+          <span className="crt__glass" aria-hidden />
+          {screen === "powering" && <span className="crt__powerline" aria-hidden />}
+        </button>
+      </div>
+
+      {/* ── Visible, usable VCR control deck ── */}
+      <div className="vcr" role="group" aria-label="VCR controls">
+        <div className="vcr__top">
+          <span
+            className={`vcr__clock ${reducedMotion ? "" : "vcr__clock--blink"}`}
+            aria-hidden
+          >
+            12:00
+          </span>
+          <span className="vcr__nowplaying" aria-hidden>
+            {isOn ? `TRACK ${trackNumber} · ${currentTrack?.title ?? ""}` : "— — —"}
+          </span>
+          <span className="vcr__display" aria-hidden>
+            <span className="vcr__led" data-on={isPlaying} />
+            <span className="vcr__time">
+              {formatTime(currentTime)}
+              {duration > 0 ? ` / ${formatTime(duration)}` : ""}
+            </span>
+          </span>
         </div>
 
-        {/* ── VCR unit ── */}
-        <div className="vcr">
-          <div className="vcr__top">
+        <div className="vcr__progress" aria-hidden>
+          <span className="vcr__progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+
+        <div className="vcr__controls">
+          <button
+            type="button"
+            className="vcr-btn"
+            onClick={() => changeTrack(-1)}
+            disabled={!hasTracks}
+            aria-label="Previous track"
+          >
+            <span aria-hidden>◀◀</span>
+            <span className="vcr-btn__label">Rew</span>
+          </button>
+
+          <button
+            type="button"
+            className="vcr-btn vcr-btn--primary"
+            onClick={togglePlay}
+            disabled={!hasTracks}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            <span aria-hidden>{isPlaying ? "❚❚" : "▶"}</span>
+            <span className="vcr-btn__label">{isPlaying ? "Pause" : "Play"}</span>
+          </button>
+
+          <button
+            type="button"
+            className="vcr-btn"
+            onClick={stop}
+            disabled={!hasTracks || !isOn}
+            aria-label="Stop"
+          >
+            <span aria-hidden>■</span>
+            <span className="vcr-btn__label">Stop</span>
+          </button>
+
+          <button
+            type="button"
+            className="vcr-btn"
+            onClick={() => changeTrack(1)}
+            disabled={!hasTracks}
+            aria-label="Next track"
+          >
+            <span aria-hidden>▶▶</span>
+            <span className="vcr-btn__label">FF</span>
+          </button>
+
+          <div className="vcr-knob">
             <span
-              className={`vcr__clock ${reducedMotion ? "" : "vcr__clock--blink"}`}
+              className="vcr-knob__dial"
+              style={{ "--angle": `${volumeAngle}deg` } as CSSProperties}
               aria-hidden
             >
-              12:00
+              <span className="vcr-knob__indicator" />
             </span>
-            <span className="vcr__slot" aria-hidden>
-              <span className="vcr__slot-flap" />
-            </span>
-            <span className="vcr__display" aria-hidden>
-              <span className="vcr__led" data-on={isPlaying} />
-              <span className="vcr__time">
-                {formatTime(currentTime)}
-                {duration > 0 ? ` / ${formatTime(duration)}` : ""}
-              </span>
-            </span>
-          </div>
-
-          <div className="vcr__progress" aria-hidden>
-            <span
-              className="vcr__progress-fill"
-              style={{ width: `${progress}%` }}
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={volume}
+              onChange={(e) => setVolume(Number(e.target.value))}
+              className="vcr-knob__input"
+              aria-label="Volume"
             />
+            <span className="vcr-knob__label">Vol</span>
           </div>
-
-          <div className="vcr__controls">
-            <button
-              type="button"
-              className="vcr-btn"
-              onClick={() => changeTrack(-1)}
-              disabled={!hasTracks}
-              aria-label="Previous track"
-            >
-              <span aria-hidden>◀◀</span>
-              <span className="vcr-btn__label">Rew</span>
-            </button>
-
-            <button
-              type="button"
-              className="vcr-btn vcr-btn--primary"
-              onClick={togglePlay}
-              disabled={!hasTracks}
-              aria-label={isPlaying ? "Pause" : "Play"}
-            >
-              <span aria-hidden>{isPlaying ? "❚❚" : "▶"}</span>
-              <span className="vcr-btn__label">
-                {isPlaying ? "Pause" : "Play"}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              className="vcr-btn"
-              onClick={stop}
-              disabled={!hasTracks || !isOn}
-              aria-label="Stop"
-            >
-              <span aria-hidden>■</span>
-              <span className="vcr-btn__label">Stop</span>
-            </button>
-
-            <button
-              type="button"
-              className="vcr-btn"
-              onClick={() => changeTrack(1)}
-              disabled={!hasTracks}
-              aria-label="Next track"
-            >
-              <span aria-hidden>▶▶</span>
-              <span className="vcr-btn__label">FF</span>
-            </button>
-
-            {/* Volume knob */}
-            <div className="vcr-knob">
-              <span
-                className="vcr-knob__dial"
-                style={{ "--angle": `${volumeAngle}deg` } as CSSProperties}
-                aria-hidden
-              >
-                <span className="vcr-knob__indicator" />
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={1}
-                step={0.01}
-                value={volume}
-                onChange={(e) => setVolume(Number(e.target.value))}
-                className="vcr-knob__input"
-                aria-label="Volume"
-              />
-              <span className="vcr-knob__label">Vol</span>
-            </div>
-          </div>
-        </div>
-
-        {/* TV stand legs */}
-        <div className="tv-legs" aria-hidden>
-          <span className="tv-leg" />
-          <span className="tv-leg" />
         </div>
       </div>
 

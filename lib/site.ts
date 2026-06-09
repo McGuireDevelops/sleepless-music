@@ -18,6 +18,13 @@ export const site = {
     "https://play.reelcrafter.com/embed/2e657888-ebf7-41c8-864c-580e813b4f38",
   musicHeading: "Music",
   musicIntro: "Selected works — film, games, and contemporary media.",
+  /** Photoreal CRT scene used as the music player backdrop. */
+  tvScene: "/images/tv-scene.png",
+  /**
+   * Live-screen overlay rectangle as percentages of the scene image,
+   * tuned to sit exactly over the CRT tube. Adjust if the art changes.
+   */
+  tvScreenRect: { top: 27, left: 29, width: 39.2, height: 46.5 },
   /**
    * Demo reel tracks for the native TV/VCR player.
    * Drop audio files into `public/audio/` and update the `src` paths.
