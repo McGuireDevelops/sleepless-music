@@ -617,7 +617,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   }
 }
 
-/* ── VCR control deck (standalone, brushed metal) ── */
+/* ── VCR control deck (brushed metal, glassy) ── */
 .vcr {
   width: 100%;
   max-width: 40rem;
@@ -631,12 +631,24 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
       transparent 1px,
       transparent 3px
     ),
-    linear-gradient(180deg, #34343a 0%, #1b1b1f 55%, #121214 100%);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+    linear-gradient(180deg, rgba(46, 46, 52, 0.92) 0%, rgba(18, 18, 20, 0.94) 100%);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 24px 50px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.09),
     inset 0 -3px 10px rgba(0, 0, 0, 0.55);
+}
+
+/* On larger screens, tuck the controls into the lower (console) area of the scene */
+@media (min-width: 48rem) {
+  .vcr {
+    position: relative;
+    z-index: 5;
+    margin-top: -14%;
+    width: min(38rem, 56%);
+  }
 }
 
 .vcr__top {
