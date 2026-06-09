@@ -16,11 +16,11 @@ export function MusicSection() {
             {site.musicIntro}
           </p>
         </ScrollReveal>
+      </div>
 
+      <div className="mx-auto mt-12 w-full max-w-[96rem] px-4 md:px-6">
         <ScrollReveal delayMs={200}>
-          <div className="mt-12">
-            <TvPlayer />
-          </div>
+          <TvPlayer />
         </ScrollReveal>
       </div>
     </section>

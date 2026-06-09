@@ -322,7 +322,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 .tv-scene {
   position: relative;
   width: 100%;
-  max-width: 62rem;
+  max-width: min(95vw, 96rem);
   aspect-ratio: 1536 / 1024;
   overflow: hidden;
   border-radius: 6px;
