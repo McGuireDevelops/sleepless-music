@@ -291,6 +291,8 @@ export function TvPlayer() {
         />
       )}
 
+      {/* ── Photoreal scene + controls stage ── */}
+      <div className="tv-stage">
       {/* ── Photoreal scene with live CRT overlay ── */}
       <div className="tv-scene">
         <Image
@@ -444,6 +446,7 @@ export function TvPlayer() {
             <span className="vcr-knob__label">Vol</span>
           </div>
         </div>
+      </div>
       </div>
 
       {site.reelcrafterReelUrl && (

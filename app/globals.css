@@ -318,11 +318,18 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   width: 100%;
 }
 
+/* Stage wraps the scene + controls so the deck can be placed over the photo */
+.tv-stage {
+  position: relative;
+  width: 100%;
+  max-width: min(95vw, 96rem);
+  margin-inline: auto;
+}
+
 /* Photoreal room + television scene */
 .tv-scene {
   position: relative;
   width: 100%;
-  max-width: min(95vw, 96rem);
   aspect-ratio: 1536 / 1024;
   overflow: hidden;
   border-radius: 6px;
@@ -641,13 +648,59 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
     inset 0 -3px 10px rgba(0, 0, 0, 0.55);
 }
 
-/* On larger screens, tuck the controls into the lower (console) area of the scene */
+/* On larger screens, place the controls inside the image over the shelf player */
 @media (min-width: 48rem) {
   .vcr {
-    position: relative;
+    position: absolute;
     z-index: 5;
-    margin-top: -14%;
-    width: min(38rem, 56%);
+    left: 27%;
+    width: 30%;
+    bottom: 4%;
+    height: 145px;
+    margin-top: 0;
+    padding: 0.55rem 0.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 8px;
+  }
+
+  .vcr__top {
+    margin-bottom: 0;
+    gap: 0.5rem;
+  }
+
+  .vcr__nowplaying {
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+  }
+
+  .vcr__progress {
+    margin-bottom: 0;
+  }
+
+  .vcr__controls {
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+  }
+
+  .vcr-btn {
+    min-width: 0;
+    flex: 1 1 0;
+    padding: 0.4rem 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .vcr-knob {
+    flex: 0 0 auto;
+    margin-left: 0.15rem;
+  }
+
+  .vcr-knob__dial,
+  .vcr-knob__input {
+    width: 38px;
+    height: 38px;
   }
 }
 
