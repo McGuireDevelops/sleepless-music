@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { VhsOverlay } from "@/components/vhs-overlay";
 import { site } from "@/lib/site";
 
 export function Hero() {
@@ -22,6 +23,7 @@ export function Hero() {
           className="pointer-events-none absolute top-[22%] left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[#4a6fa5]/15 blur-3xl"
           aria-hidden
         />
+        <VhsOverlay />
       </div>
 
       <div className="relative z-10 mx-auto min-h-[100svh] w-full max-w-6xl px-6 md:px-10">

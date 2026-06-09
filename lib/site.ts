@@ -17,6 +17,9 @@ export const site = {
   reelcrafterEmbedSrc:
     "https://play.reelcrafter.com/embed/2e657888-ebf7-41c8-864c-580e813b4f38",
   reelcrafterEmbedTitle: "Robert McGuire — Demo Reel",
+  cassetteLabel: "Demo Reel",
+  cassetteSideTitle: "SLEEPLESS MUSIC",
+  cassetteTrackLine: "Film · Games · Media",
   socialImage: "/og-share.png",
   socialImageWidth: 1200,
   socialImageHeight: 630,
