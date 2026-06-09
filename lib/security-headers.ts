@@ -1,6 +1,6 @@
 /**
  * Security headers for all routes. CSP is tuned for this static site:
- * self-hosted assets, ReelCrafter embed, Vercel Analytics / Speed Insights.
+ * self-hosted assets and audio, Vercel Analytics / Speed Insights.
  */
 export function buildContentSecurityPolicy(): string {
   const isDev = process.env.NODE_ENV === "development";
@@ -16,10 +16,10 @@ export function buildContentSecurityPolicy(): string {
     "frame-ancestors 'self'",
     `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://*.reelcrafter.com",
+    "img-src 'self' data: blob:",
     "font-src 'self'",
-    "frame-src https://*.reelcrafter.com",
-    "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com https://*.reelcrafter.com",
+    "media-src 'self'",
+    "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com",
     "upgrade-insecure-requests",
   ].join("; ");
 }

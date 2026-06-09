@@ -6,6 +6,11 @@ const HOST_REDIRECTS: Record<string, string> = {
 };
 
 export function middleware(request: NextRequest) {
+  // Skip host/HTTPS redirects locally so the dev server is reachable over HTTP.
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
+
   const hostHeader = request.headers.get("host") ?? "";
   const hostname = hostHeader.split(":")[0]?.toLowerCase() ?? "";
   const proto = request.headers.get("x-forwarded-proto");

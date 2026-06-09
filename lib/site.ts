@@ -13,13 +13,20 @@ export const site = {
   location: "Dublin, Ireland",
   jobTitle: "Composer",
   contactEmail: "info@sleeplessmusic.com",
-  /** ReelCrafter iframe src — paste from ReelCrafter dashboard → Embed → Copy Code */
-  reelcrafterEmbedSrc:
+  /** Full ReelCrafter reel — linked as a fallback / "view full reel". */
+  reelcrafterReelUrl:
     "https://play.reelcrafter.com/embed/2e657888-ebf7-41c8-864c-580e813b4f38",
-  reelcrafterEmbedTitle: "Robert McGuire — Demo Reel",
-  cassetteLabel: "Demo Reel",
-  cassetteSideTitle: "SLEEPLESS MUSIC",
-  cassetteTrackLine: "Film · Games · Media",
+  musicHeading: "Music",
+  musicIntro: "Selected works — film, games, and contemporary media.",
+  /**
+   * Demo reel tracks for the native TV/VCR player.
+   * Drop audio files into `public/audio/` and update the `src` paths.
+   */
+  tracks: [
+    { title: "Cue One", src: "/audio/track-01.mp3" },
+    { title: "Cue Two", src: "/audio/track-02.mp3" },
+    { title: "Cue Three", src: "/audio/track-03.mp3" },
+  ],
   socialImage: "/og-share.png",
   socialImageWidth: 1200,
   socialImageHeight: 630,

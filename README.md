@@ -15,10 +15,18 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Edit copy, credits, and URLs in [`lib/site.ts`](lib/site.ts).
 
-### ReelCrafter embed
+### Music (TV/VCR player)
 
-1. Open your reel in ReelCrafter → Embed → Create → Copy Code
-2. Paste the iframe `src` URL into `reelcrafterEmbedSrc` in `lib/site.ts`
+The Music section is a retro CRT TV + VCR that plays self-hosted audio so the
+on-screen controls actually work.
+
+1. Drop track files into [`public/audio/`](public/audio/) (MP3/WAV).
+2. List them in order in the `tracks` array in `lib/site.ts`, each with a
+   `title` and a `src` path (e.g. `/audio/track-01.mp3`).
+3. `reelcrafterReelUrl` in `lib/site.ts` is linked under the set as
+   "Open the full reel".
+
+Until audio files exist the TV shows a "NO SIGNAL" state.
 
 ### Social links
 
