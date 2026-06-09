@@ -14,23 +14,33 @@ export const site = {
   jobTitle: "Composer",
   contactEmail: "info@sleeplessmusic.com",
   /** ReelCrafter iframe src — paste from ReelCrafter dashboard → Embed → Copy Code */
-  reelcrafterEmbedSrc: "" as string,
-  reelcrafterEmbedTitle: "Robert McGuire — Music Reel",
+  reelcrafterEmbedSrc:
+    "https://play.reelcrafter.com/embed/2e657888-ebf7-41c8-864c-580e813b4f38",
+  reelcrafterEmbedTitle: "Robert McGuire — Demo Reel",
   socialImage: "/og-share.png",
   socialImageWidth: 1200,
   socialImageHeight: 630,
-  heroImage: "/hero.png",
-  heroImageAlt: "Atmospheric studio light — Robert McGuire, composer",
+  heroImage: "/images/hero.webp",
+  heroImageAlt:
+    "Robert McGuire — composer for film, TV, and video games. Photography by Michael Robert Williams.",
+  aboutPortrait: "/images/about-portrait.webp",
+  aboutPortraitAlt: "Robert McGuire — composer portrait",
+  logoImage: "/images/logo-white.png",
+  logoAlt: "McGuire — Sleepless Music",
+  avidCertifiedBadge: "/images/avid-certified-pro-tools-specialist.png",
+  avidCertifiedBadgeAlt: "Avid Certified Pro Tools Specialist",
+  avidCertifiedUrl:
+    "https://www.credly.com/badges/1bf6ba9a-481c-4aca-9442-63466e4cb5b7/public_url",
   social: {
     linkedin: "",
-    instagram: "",
+    instagram: "https://www.instagram.com/mcguireofficial/",
+    facebook: "https://www.facebook.com/McGuireOfficial/",
     spotify: "",
   },
   about: [
-    "Robert McGuire is an emerging composer based in Dublin, Ireland, working across film, games, and contemporary media. His background in audio began with an Advanced Diploma in Sound Engineering and Music Production from Pulse College in 2008, laying the foundation for a career shaped by both technical expertise and creative exploration.",
-    "Since then, Robert has built extensive experience in audio technology, composition, and music production, refining his craft through a combination of formal training and hands-on professional work. He is also an Avid Certified Pro Tools Specialist, bringing a high level of technical precision to his projects.",
-    "In November 2025, he completed the Graduate Diploma in Film and Game Scoring with the Film Scoring Academy of Europe, where he further developed his voice as a composer, with a focus on orchestration and narrative-driven music.",
-    "Robert is currently undertaking a part-time MA in Professional Media Composition with ThinkSpace Education, while composing the score for the upcoming short film April 28.",
+    "Robert McGuire is an emerging composer based in Dublin, Ireland, working across film, games, and contemporary media. Robert has an innate dramatic sensibility and is an exquisite storyteller with music appealing to modern audiences.",
+    "His background in audio began with an Advanced Diploma in Sound Engineering and Music Production from Pulse College in 2008, laying the foundation for a career shaped by both technical expertise and creative exploration. Since then, Robert has built extensive experience in composition, and music production, refining his craft through a combination of formal training and hands-on professional work.",
+    "In November 2025, he graduated from the Film Scoring Academy of Europe, where he further developed his voice as a composer, with a focus on orchestration and narrative-driven music. Robert is currently undertaking MA in Professional Media Composition with ThinkSpace Education, while composing the score for the upcoming short film \"April 28.\"",
   ],
   work: [
     {
@@ -39,17 +49,6 @@ export const site = {
       year: "2026",
       description: "Short film — drama inspired by true events.",
       href: "https://www.april28film.com",
-    },
-    {
-      title: "Film & Game Scoring",
-      role: "Composer",
-      year: "2025",
-      description: "Graduate work with the Film Scoring Academy of Europe.",
-    },
-    {
-      title: "Contemporary Media",
-      role: "Composer & Producer",
-      description: "Scores and production for film, games, and media projects.",
     },
   ],
 } as const;
@@ -67,14 +66,15 @@ export const shareImageAbsoluteUrl = `${site.url}${site.socialImage}`;
 const socialEntries = [
   { label: "LinkedIn", href: site.social.linkedin, icon: "linkedin" as const },
   { label: "Instagram", href: site.social.instagram, icon: "instagram" as const },
+  { label: "Facebook", href: site.social.facebook, icon: "facebook" as const },
   { label: "Spotify", href: site.social.spotify, icon: "spotify" as const },
 ].filter((link) => link.href.length > 0);
 
 export const socialLinks = socialEntries;
 
 export const navLinks = [
-  { href: "#music", label: "Music" },
-  { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#music", label: "Music" },
+  { href: "/#work", label: "Work" },
+  { href: "/#about", label: "About" },
+  { href: "/#contact", label: "Contact" },
 ] as const;

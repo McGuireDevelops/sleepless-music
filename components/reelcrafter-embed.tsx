@@ -27,7 +27,9 @@ export function ReelCrafterEmbed() {
               <iframe
                 src={site.reelcrafterEmbedSrc}
                 title={site.reelcrafterEmbedTitle}
-                className="aspect-[16/10] w-full border-0 md:aspect-[16/9]"
+                width="100%"
+                height={400}
+                className="block h-[400px] w-full border-0"
                 allow="autoplay; encrypted-media"
                 loading="lazy"
               />

@@ -29,7 +29,7 @@ export function Hero() {
           <p className="mb-4 text-center text-[0.65rem] tracking-[0.45em] text-gold/90 uppercase md:mb-4 md:text-xs">
             {site.brandLine}
           </p>
-          <h1 className="hero-title font-display text-center text-[clamp(2rem,min(12vw,10svh),7rem)] leading-[0.95] font-normal tracking-[0.08em] uppercase text-transparent bg-gradient-to-b from-[#f5e6b8] via-gold to-[#c9782e] bg-clip-text">
+          <h1 className="hero-title font-display text-center text-[clamp(2rem,min(12vw,10svh),7rem)] leading-[0.95] font-normal tracking-[0.08em] uppercase text-transparent bg-gradient-to-b from-white via-cinematic-white to-[#d8d4cc] bg-clip-text">
             {site.artistName}
           </h1>
           <p className="mt-6 text-center font-display text-sm tracking-[0.12em] text-sand/90 uppercase md:mt-6 md:text-base">

@@ -30,7 +30,7 @@ export function WorkSection() {
                         href={item.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="transition-colors hover:text-[#f5e6b8]"
+                        className="transition-colors hover:text-white"
                       >
                         {item.title}
                       </a>

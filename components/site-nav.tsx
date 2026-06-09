@@ -40,7 +40,7 @@ export function SiteNav() {
           aria-label="Primary"
         >
           <a
-            href="#top"
+            href="/#top"
             className="font-display text-sm tracking-[0.35em] text-gold md:text-base"
           >
             {site.title}

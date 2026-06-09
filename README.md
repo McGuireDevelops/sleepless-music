@@ -34,25 +34,25 @@ npm run generate:assets
 
 Commit the outputs under `public/` and `app/favicon.ico`.
 
-## Deploy (Vercel)
+## Deploy
 
-This is a **separate** Vercel project from `april-28-film`.
+Standalone Vercel project: **`sleepless-music`** (personal account — not ShopWear).
 
 ```bash
-vercel link    # create new project: sleepless-music
-vercel deploy  # preview
-vercel --prod  # production
+npx vercel          # preview
+npx vercel --prod   # production
 ```
 
-## Domain cutover (sleeplessmusic.com)
+Production: [sleeplessmusic.com](https://www.sleeplessmusic.com)
 
-When ready to replace WordPress:
+## DNS (Cloudflare)
 
-1. Deploy and verify on a Vercel preview URL
-2. In Vercel → Project → Domains, add `sleeplessmusic.com` and `www.sleeplessmusic.com`
-3. Update DNS at your registrar (Vercel will show A/CNAME records)
-4. `vercel.json` already redirects apex → `www` and old WP paths → anchors
-5. Keep WordPress live until DNS propagates, then cancel WP hosting
+Domains are on the personal Vercel account. Point Cloudflare at Vercel:
+
+- `A` `sleeplessmusic.com` → `76.76.21.21`
+- `A` or `CNAME` `www` → `76.76.21.21` or `cname.vercel-dns.com`
+
+`vercel.json` redirects apex → `www` and old WordPress paths → page anchors.
 
 ## Stack
 

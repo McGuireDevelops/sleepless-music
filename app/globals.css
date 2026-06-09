@@ -3,8 +3,9 @@
 :root {
   --navy: #080f1a;
   --navy-mid: #0d1528;
-  --gold: #d4a853;
-  --amber: #c9782e;
+  --cinematic-white: #f4f0e8;
+  --gold: var(--cinematic-white);
+  --amber: #d8d4cc;
   --sand: #e8dcc8;
   --site-header-offset: calc(env(safe-area-inset-top, 0px) + 3.5rem);
 }
@@ -18,7 +19,8 @@
 @theme inline {
   --color-navy: var(--navy);
   --color-navy-mid: var(--navy-mid);
-  --color-gold: var(--gold);
+  --color-cinematic-white: var(--cinematic-white);
+  --color-gold: var(--cinematic-white);
   --color-amber: var(--amber);
   --color-sand: var(--sand);
   --font-display: var(--font-cormorant);

@@ -93,7 +93,7 @@ export default function RootLayout({
         <link
           rel="mask-icon"
           href="/safari-pinned-tab.svg"
-          color="#d4a853"
+          color="#f4f0e8"
         />
       </head>
       <body className="min-h-screen antialiased">
