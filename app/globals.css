@@ -656,24 +656,33 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
     left: 27%;
     width: 30%;
     bottom: 4%;
-    height: 145px;
+    height: 124px;
     margin-top: 0;
-    padding: 0.55rem 0.7rem;
+    padding: 0.4rem 0.6rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.35rem;
     border-radius: 8px;
   }
 
   .vcr__top {
     margin-bottom: 0;
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
 
   .vcr__nowplaying {
-    font-size: 0.58rem;
-    letter-spacing: 0.16em;
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+  }
+
+  .vcr__clock,
+  .vcr__time {
+    font-size: 0.72rem;
+  }
+
+  .vcr__display {
+    padding: 0.15rem 0.45rem;
   }
 
   .vcr__progress {
@@ -682,14 +691,18 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 
   .vcr__controls {
     flex-wrap: nowrap;
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   .vcr-btn {
     min-width: 0;
     flex: 1 1 0;
-    padding: 0.4rem 0.25rem;
-    font-size: 0.8rem;
+    padding: 0.3rem 0.2rem;
+    font-size: 0.75rem;
+  }
+
+  .vcr-btn__label {
+    font-size: 0.45rem;
   }
 
   .vcr-knob {
@@ -699,8 +712,8 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 
   .vcr-knob__dial,
   .vcr-knob__input {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
   }
 }
 
