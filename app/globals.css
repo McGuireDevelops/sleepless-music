@@ -949,23 +949,6 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
 }
 
-.tv-fulllink {
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(244, 240, 232, 0.5);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.tv-fulllink:hover {
-  color: var(--cinematic-white);
-  border-color: rgba(244, 240, 232, 0.5);
-}
-
 @media (max-width: 34rem) {
   .vcr__top {
     flex-wrap: wrap;

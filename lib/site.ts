@@ -13,9 +13,6 @@ export const site = {
   location: "Dublin, Ireland",
   jobTitle: "Composer",
   contactEmail: "info@sleeplessmusic.com",
-  /** Full ReelCrafter reel — linked as a fallback / "view full reel". */
-  reelcrafterReelUrl:
-    "https://play.reelcrafter.com/embed/2e657888-ebf7-41c8-864c-580e813b4f38",
   musicHeading: "Music",
   musicIntro: "Selected works — film, games, and contemporary media.",
   /** Photoreal CRT scene used as the music player backdrop. */

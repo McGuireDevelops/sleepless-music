@@ -23,8 +23,6 @@ on-screen controls actually work.
 1. Drop track files into [`public/audio/`](public/audio/) (MP3/WAV).
 2. List them in order in the `tracks` array in `lib/site.ts`, each with a
    `title` and a `src` path (e.g. `/audio/track-01.mp3`).
-3. `reelcrafterReelUrl` in `lib/site.ts` is linked under the set as
-   "Open the full reel".
 
 Until audio files exist the TV shows a "NO SIGNAL" state.
 

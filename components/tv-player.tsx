@@ -448,17 +448,6 @@ export function TvPlayer() {
         </div>
       </div>
       </div>
-
-      {site.reelcrafterReelUrl && (
-        <a
-          className="tv-fulllink"
-          href={site.reelcrafterReelUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Open the full reel
-        </a>
-      )}
     </div>
   );
 }
