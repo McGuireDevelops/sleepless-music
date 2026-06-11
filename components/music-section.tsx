@@ -18,7 +18,7 @@ export function MusicSection() {
         </ScrollReveal>
       </div>
 
-      <div className="mx-auto mt-12 w-full max-w-[96rem] px-4 md:px-6">
+      <div className="mx-auto mt-12 w-full max-w-[96rem] px-0 md:px-6">
         <ScrollReveal delayMs={200}>
           <TvPlayer />
         </ScrollReveal>
