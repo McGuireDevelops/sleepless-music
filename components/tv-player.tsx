@@ -376,16 +376,23 @@ export function TvPlayer() {
         data-on={isOn}
         data-playing={isPlaying}
       >
-        <div className="vcr__top">
-          <span
-            className={`vcr__clock ${reducedMotion ? "" : "vcr__clock--blink"}`}
-            aria-hidden
-          >
-            12:00
-          </span>
-          <span className="vcr__nowplaying" aria-hidden>
-            {isOn ? `TRACK ${trackNumber} · ${currentTrack?.title ?? ""}` : "- - -"}
-          </span>
+        <div className="vcr__deck">
+          <div className="vcr__slot" aria-hidden>
+            <div className="vcr__slot-bezel">
+              <div className="vcr__slot-mouth">
+                <div
+                  className={`vcr__cassette ${isOn ? "vcr__cassette--in" : ""}`}
+                >
+                  <span className="vcr__cassette-reel" />
+                  <span className="vcr__cassette-label">
+                    {currentTrack?.title ?? "DEMO REEL"}
+                  </span>
+                  <span className="vcr__cassette-reel" />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <span className="vcr__display" aria-hidden>
             <span className="vcr__led" data-on={isPlaying} />
             <span className="vcr__time">
@@ -393,22 +400,6 @@ export function TvPlayer() {
               {duration > 0 ? ` / ${formatTime(duration)}` : ""}
             </span>
           </span>
-        </div>
-
-        <div className="vcr__slot" aria-hidden>
-          <div className="vcr__slot-bezel">
-            <div className="vcr__slot-mouth">
-              <div
-                className={`vcr__cassette ${isOn ? "vcr__cassette--in" : ""}`}
-              >
-                <span className="vcr__cassette-reel" />
-                <span className="vcr__cassette-label">
-                  {currentTrack?.title ?? "DEMO REEL"}
-                </span>
-                <span className="vcr__cassette-reel" />
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="vcr__progress" aria-hidden>
