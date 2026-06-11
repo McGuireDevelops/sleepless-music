@@ -16,7 +16,7 @@ export const site = {
   musicHeading: "Music",
   musicIntro: "Selected works for film, games, and contemporary media.",
   /** Photoreal CRT scene used as the music player backdrop. */
-  tvScene: "/images/tv-scene-v3.png",
+  tvScene: "/images/tv-scene-v4.png",
   /**
    * Live-screen overlay rectangle as percentages of the scene image,
    * tuned to sit exactly over the CRT tube. Adjust if the art changes.
