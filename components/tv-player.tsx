@@ -171,7 +171,7 @@ export function TvPlayer() {
         const freqLevel = fSum / bandCount / 255;
 
         const level = waveLevel * 0.65 + freqLevel * 0.35;
-        const target = Math.min(1, level * 4);
+        const target = Math.min(1, level * 2.5);
         const prev = vuSmoothRef.current[i] ?? 0;
         const coeff = target > prev ? 0.28 : 0.1;
         const smoothed = prev + (target - prev) * coeff;
