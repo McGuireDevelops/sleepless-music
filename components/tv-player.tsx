@@ -412,6 +412,7 @@ export function TvPlayer() {
       </div>
 
       {/* ── Visible, usable VCR control deck ── */}
+      <div className="vcr-scale">
       <div
         id="player-controls"
         className="vcr scroll-mt-0 scroll-mb-4"
@@ -514,6 +515,7 @@ export function TvPlayer() {
             <span className="vcr-knob__label">Vol</span>
           </div>
         </div>
+      </div>
       </div>
       </div>
     </div>
