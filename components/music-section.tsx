@@ -12,7 +12,7 @@ export function MusicSection() {
           </h2>
         </ScrollReveal>
         <ScrollReveal delayMs={120}>
-          <p className="mt-6 text-center text-sm leading-relaxed text-sand/60">
+          <p className="mt-6 text-center text-base leading-7 text-white md:text-lg md:leading-8">
             {site.musicIntro}
           </p>
         </ScrollReveal>
