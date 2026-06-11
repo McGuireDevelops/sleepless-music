@@ -372,23 +372,6 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   }
 }
 
-/* Invisible hit target over the TV power switch / knob in the photo */
-.tv-power {
-  position: absolute;
-  z-index: 6;
-  display: block;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.tv-power:focus-visible {
-  outline: 2px solid var(--cinematic-white);
-  outline-offset: 2px;
-}
-
 /* Live CRT screen overlay, positioned over the tube in the photo */
 .crt {
   position: absolute;

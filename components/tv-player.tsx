@@ -26,8 +26,6 @@ function formatTime(seconds: number): string {
 export function TvPlayer() {
   const tracks = site.tracks;
   const hasTracks = tracks.length > 0;
-  const powerRect = site.tvPowerRect;
-
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -238,33 +236,6 @@ export function TvPlayer() {
     stopVuLoop();
   }, [stopVuLoop]);
 
-  const powerOff = useCallback(() => {
-    if (powerTimerRef.current) clearTimeout(powerTimerRef.current);
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-    setCurrentTime(0);
-    setScreen("off");
-    stopVuLoop();
-  }, [stopVuLoop]);
-
-  const powerOn = useCallback(() => {
-    if (!hasTracks) return;
-    setScreen("powering");
-    const delay = reducedMotion ? 0 : POWER_ON_MS;
-    if (powerTimerRef.current) clearTimeout(powerTimerRef.current);
-    powerTimerRef.current = setTimeout(() => {
-      setScreen("no-signal");
-    }, delay);
-  }, [hasTracks, reducedMotion]);
-
-  const togglePower = useCallback(() => {
-    if (screen === "off") powerOn();
-    else powerOff();
-  }, [screen, powerOn, powerOff]);
-
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !hasTracks) return;
@@ -334,13 +305,6 @@ export function TvPlayer() {
     height: `${rect.height}%`,
   };
 
-  const powerStyle: CSSProperties = {
-    top: `${powerRect.top}%`,
-    left: `${powerRect.left}%`,
-    width: `${powerRect.width}%`,
-    height: `${powerRect.height}%`,
-  };
-
   return (
     <div
       className={`tv-player ${reducedMotion ? "tv-player--reduced" : ""}`}
@@ -383,14 +347,6 @@ export function TvPlayer() {
           className="tv-scene__img tv-scene__img--mobile"
           sizes="(max-width: 74.99rem) 100vw, 0px"
           priority={false}
-        />
-
-        <button
-          type="button"
-          className="tv-power"
-          style={powerStyle}
-          onClick={togglePower}
-          aria-label={screen === "off" ? "Power on" : "Power off"}
         />
 
         <button

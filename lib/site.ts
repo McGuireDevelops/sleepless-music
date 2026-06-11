@@ -26,8 +26,6 @@ export const site = {
   tvScreenRect: { top: 27, left: 29, width: 40, height: 46.5 },
   /** Mobile CRT overlay — narrower so it does not spill onto the speaker grille. */
   tvScreenRectMobile: { top: 27, left: 29, width: 38, height: 46.5 },
-  /** Power switch / knob on the TV cabinet (percent of scene image). */
-  tvPowerRect: { top: 59, left: 71, width: 7, height: 11 },
   /**
    * Demo reel tracks for the native TV/VCR player.
    * Drop audio files into `public/audio/` and update the `src` paths.
