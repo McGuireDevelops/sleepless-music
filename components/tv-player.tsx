@@ -380,15 +380,13 @@ export function TvPlayer() {
           <div className="vcr__slot" aria-hidden>
             <div className="vcr__slot-bezel">
               <div className="vcr__slot-mouth">
-                <div
-                  className={`vcr__cassette ${isOn ? "vcr__cassette--in" : ""}`}
-                >
-                  <span className="vcr__cassette-reel" />
-                  <span className="vcr__cassette-label">
-                    {currentTrack?.title ?? "DEMO REEL"}
-                  </span>
-                  <span className="vcr__cassette-reel" />
-                </div>
+                {isOn && (
+                  <div className="vcr__tape">
+                    <span className="vcr__tape-window">
+                      {currentTrack?.title ?? "DEMO REEL"}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

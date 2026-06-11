@@ -667,18 +667,30 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   }
 
   .vcr__deck {
-    gap: 0.35rem;
+    gap: 0.3rem;
+    align-items: stretch;
+  }
+
+  .vcr__slot {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .vcr__slot-bezel {
-    height: 22px;
+    height: 50px;
+    width: min(100%, calc(50px * 187 / 103));
+    aspect-ratio: unset;
+    padding: 3px;
+  }
+
+  .vcr__tape-window {
+    font-size: 0.42rem;
   }
 
   .vcr__display {
-    flex: 1 1 auto;
-    min-width: 0;
-    justify-content: flex-end;
-    padding: 0.12rem 0.35rem;
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 0.1rem 0.3rem;
   }
 
   .vcr__time {
@@ -778,23 +790,30 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   text-shadow: 0 0 6px rgba(106, 208, 255, 0.6);
 }
 
-/* Front-loading VHS slot (187 × 103 mm cassette ratio) */
+/* Front-loading VHS slot (187 × 103 mm cassette case ratio) */
 .vcr__slot {
-  flex: 0 0 auto;
-  width: auto;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .vcr__slot-bezel {
   position: relative;
-  padding: 2px;
-  border-radius: 4px;
+  width: 100%;
   aspect-ratio: 187 / 103;
-  height: 24px;
-  background: linear-gradient(180deg, #4a4a50 0%, #2a2a2e 55%, #1a1a1c 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px;
+  border-radius: 4px;
+  background: linear-gradient(
+    180deg,
+    #52525a 0%,
+    #34343a 38%,
+    #222226 72%,
+    #18181a 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.11);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.55),
+    0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .vcr__slot-mouth {
@@ -802,65 +821,41 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   height: 100%;
   border-radius: 2px;
   overflow: hidden;
-  background: #050505;
+  background:
+    linear-gradient(180deg, #0a0a0c 0%, #030303 45%, #080808 100%);
   box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.95),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+    inset 0 4px 10px rgba(0, 0, 0, 0.98),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.03);
 }
 
-.vcr__cassette {
+/* Static tape shell visible inside the slot when loaded */
+.vcr__tape {
+  position: absolute;
+  inset: 3px 4px 2px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, #2a2a2e 0%, #121214 55%, #08080a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.vcr__tape-window {
   position: absolute;
   left: 50%;
-  bottom: 100%;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  width: 72%;
-  height: 16px;
-  padding: 0 5px;
-  border-radius: 2px 2px 0 0;
-  background: linear-gradient(180deg, #1e1e22 0%, #0a0a0c 100%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: none;
-  transform: translateX(-50%);
-  transition: bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.vcr__cassette--in {
-  bottom: 1px;
-}
-
-.vcr__cassette-reel {
-  flex: 0 0 7px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #3a3a3e 0%, #111 70%);
-  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.9);
-}
-
-.vcr[data-playing="true"] .vcr__cassette-reel {
-  animation: vcr-reel-spin 1.4s linear infinite;
-}
-
-@keyframes vcr-reel-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.vcr__cassette-label {
-  flex: 1;
-  min-width: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 58%;
+  padding: 2px 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.38rem;
-  letter-spacing: 0.14em;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  color: #d4c49a;
-  text-shadow: 0 0 3px rgba(200, 184, 138, 0.35);
+  color: #2a2418;
+  background: linear-gradient(180deg, #e2d6b8 0%, #c4b48c 100%);
+  border-radius: 1px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .vcr__progress {
@@ -1095,12 +1090,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 
   .crt__bar,
   .vcr__progress-fill,
-  .vcr-knob__dial,
-  .vcr__cassette {
+  .vcr-knob__dial {
     transition: none;
-  }
-
-  .vcr__cassette-reel {
-    animation: none;
   }
 }
