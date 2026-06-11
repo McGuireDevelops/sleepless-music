@@ -417,7 +417,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 9% 16%;
+  padding: 0 9% 26%;
   opacity: 0;
   background: radial-gradient(
     120% 90% at 50% 22%,
