@@ -51,6 +51,7 @@ export function TvPlayer() {
 
   const isPlaying = screen === "playing";
   const isOn = screen !== "off";
+  const tapeInSlot = screen === "playing" || screen === "paused";
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -380,7 +381,7 @@ export function TvPlayer() {
           <div className="vcr__slot" aria-hidden>
             <div className="vcr__slot-bezel">
               <div className="vcr__slot-mouth">
-                {isOn && (
+                {tapeInSlot && (
                   <div className="vcr__tape">
                     <span className="vcr__tape-window">
                       {currentTrack?.title ?? "DEMO REEL"}
