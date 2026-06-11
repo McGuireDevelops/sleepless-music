@@ -109,7 +109,7 @@ export function TvPlayer() {
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 64;
-      analyser.smoothingTimeConstant = 0.75;
+      analyser.smoothingTimeConstant = 0.45;
       gain.gain.value = volumeRef.current * volumeRef.current;
       source.connect(gain);
       gain.connect(analyser);
@@ -143,7 +143,7 @@ export function TvPlayer() {
         sumSq += sample * sample;
       }
       const rms = Math.sqrt(sumSq / timeData.length);
-      const base = Math.min(1, rms * 3.8);
+      const base = Math.min(1, rms * 6.5);
 
       // Classic VU bounce — overall level drives all bars with per-bar phase
       // variation, not a left-heavy frequency spectrum.
@@ -152,9 +152,9 @@ export function TvPlayer() {
       for (let i = 0; i < VU_BARS; i++) {
         const phase = i * 0.82;
         const wave =
-          0.52 +
-          0.26 * Math.sin(t * 4.5 + phase) +
-          0.22 * Math.sin(t * 7.1 + phase * 1.6);
+          0.35 +
+          0.38 * Math.sin(t * 6.5 + phase) +
+          0.27 * Math.sin(t * 10.2 + phase * 1.6);
         next.push(Math.min(1, base * wave));
       }
 
