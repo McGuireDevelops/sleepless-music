@@ -327,10 +327,6 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   container-name: tv-stage;
 }
 
-.vcr-scale {
-  width: 100%;
-}
-
 /* Photoreal room + television scene */
 .tv-scene {
   position: relative;
@@ -646,12 +642,25 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   }
 }
 
-/* ── VCR control deck (brushed metal, glassy) ── */
+/* ── VCR control deck ──
+ * One proportional system for every breakpoint. --deck-h is the single scale
+ * factor (124px on desktop). Cassette slot is always 50/124 of deck height at
+ * the real VHS case ratio (187 × 103 mm).
+ */
 .vcr {
+  --deck-h: 124px;
+  --slot-h: calc(var(--deck-h) * 50 / 124);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--deck-h) * 4 / 124);
+  height: var(--deck-h);
   width: 100%;
   max-width: 40rem;
-  border-radius: 12px;
-  padding: 1rem 1.25rem 1.2rem;
+  padding: calc(var(--deck-h) * 5.6 / 124) calc(var(--deck-h) * 8.8 / 124);
+  border-radius: calc(var(--deck-h) * 8 / 124);
+  overflow: hidden;
   background:
     repeating-linear-gradient(
       90deg,
@@ -670,161 +679,28 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
     inset 0 -3px 10px rgba(0, 0, 0, 0.55);
 }
 
-/* Desktop only: place controls inside the image over the shelf player */
-@media (min-width: 75rem) {
-  .vcr {
-    position: absolute;
-    z-index: 5;
-    left: 27%;
-    width: 30%;
-    bottom: 4%;
-    height: 124px;
-    margin-top: 0;
-    padding: 0.35rem 0.55rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.25rem;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .vcr__deck {
-    gap: 0.3rem;
-    align-items: stretch;
-  }
-
-  .vcr__slot {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
-  .vcr__slot-bezel {
-    height: 50px;
-    width: min(100%, calc(50px * 187 / 103));
-    aspect-ratio: unset;
-    padding: 3px;
-  }
-
-  .vcr__tape-window {
-    font-size: 0.42rem;
-  }
-
-  .vcr__display {
-    flex: 0 0 auto;
-    align-self: center;
-    padding: 0.1rem 0.3rem;
-  }
-
-  .vcr__time {
-    font-size: 0.62rem;
-  }
-
-  .vcr__led {
-    width: 7px;
-    height: 7px;
-  }
-
-  .vcr__progress {
-    display: none;
-  }
-
-  .vcr__controls {
-    flex-wrap: nowrap;
-    gap: 0.15rem;
-    align-items: center;
-  }
-
-  .vcr-btn {
-    min-width: 0;
-    flex: 1 1 0;
-    flex-direction: row;
-    justify-content: center;
-    padding: 0.1rem 0.08rem;
-    font-size: 0.52rem;
-    border-radius: 3px;
-    gap: 0;
-    min-height: 22px;
-    max-height: 22px;
-  }
-
-  .vcr-btn__label {
-    display: none;
-  }
-
-  .vcr-knob {
-    flex: 0 0 auto;
-    margin-left: 0.08rem;
-    gap: 0;
-  }
-
-  .vcr-knob__dial,
-  .vcr-knob__input {
-    width: 22px;
-    height: 22px;
-  }
-
-  .vcr-knob__indicator {
-    height: 7px;
-    top: 3px;
-  }
-
-  .vcr-knob__label {
-    display: none;
-  }
-}
-
-/* Deck row: VHS slot + timer */
 .vcr__deck {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: stretch;
+  gap: calc(var(--deck-h) * 4.8 / 124);
   width: 100%;
 }
 
-.vcr__display {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-shrink: 0;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  background: #0a0d0a;
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
-}
-
-.vcr__led {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #3a0d0d;
-  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.8);
-}
-
-.vcr__led[data-on="true"] {
-  background: #ff3b3b;
-  box-shadow: 0 0 8px rgba(255, 59, 59, 0.9);
-}
-
-.vcr__time {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.75rem;
-  color: #6ad0ff;
-  text-shadow: 0 0 6px rgba(106, 208, 255, 0.6);
-}
-
-/* Front-loading VHS slot (187 × 103 mm cassette case ratio) */
 .vcr__slot {
   flex: 1 1 0;
   min-width: 0;
 }
 
+/* Front-loading VHS slot — 187 × 103 mm cassette case, never stretches */
 .vcr__slot-bezel {
   position: relative;
-  width: 100%;
+  height: var(--slot-h);
+  width: auto;
   aspect-ratio: 187 / 103;
-  padding: 3px;
-  border-radius: 4px;
+  max-width: 100%;
+  flex-shrink: 0;
+  padding: calc(var(--deck-h) * 3 / 124);
+  border-radius: calc(var(--deck-h) * 4 / 124);
   background: linear-gradient(
     180deg,
     #52525a 0%,
@@ -842,19 +718,18 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 .vcr__slot-mouth {
   position: relative;
   height: 100%;
-  border-radius: 2px;
+  border-radius: calc(var(--deck-h) * 2 / 124);
   overflow: hidden;
-  background:
-    linear-gradient(180deg, #0a0a0c 0%, #030303 45%, #080808 100%);
+  background: linear-gradient(180deg, #0a0a0c 0%, #030303 45%, #080808 100%);
   box-shadow:
     inset 0 4px 10px rgba(0, 0, 0, 0.98),
     inset 0 -2px 0 rgba(255, 255, 255, 0.03);
 }
 
-/* Static tape shell visible inside the slot when loaded */
 .vcr__tape {
   position: absolute;
-  inset: 3px 4px 2px;
+  inset: calc(var(--deck-h) * 3 / 124) calc(var(--deck-h) * 4 / 124)
+    calc(var(--deck-h) * 2 / 124);
   border-radius: 1px;
   background: linear-gradient(180deg, #2a2a2e 0%, #121214 55%, #08080a 100%);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -867,11 +742,11 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   top: 50%;
   transform: translate(-50%, -50%);
   width: 58%;
-  padding: 2px 4px;
+  padding: calc(var(--deck-h) * 2 / 124) calc(var(--deck-h) * 4 / 124);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.5rem;
+  font-size: calc(var(--deck-h) * 6.72 / 124);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
@@ -881,42 +756,66 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-.vcr__progress {
-  height: 4px;
-  margin-bottom: 0.9rem;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0.5);
-  overflow: hidden;
+.vcr__display {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--deck-h) * 4 / 124);
+  flex: 0 0 auto;
+  align-self: center;
+  flex-shrink: 0;
+  padding: calc(var(--deck-h) * 1.6 / 124) calc(var(--deck-h) * 4.8 / 124);
+  border-radius: calc(var(--deck-h) * 4 / 124);
+  background: #0a0d0a;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
 }
 
-.vcr__progress-fill {
-  display: block;
-  height: 100%;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #6ad0ff, var(--cinematic-white));
-  box-shadow: 0 0 6px rgba(106, 208, 255, 0.6);
-  transition: width 0.2s linear;
+.vcr__led {
+  width: calc(var(--deck-h) * 7 / 124);
+  height: calc(var(--deck-h) * 7 / 124);
+  border-radius: 50%;
+  background: #3a0d0d;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.8);
+}
+
+.vcr__led[data-on="true"] {
+  background: #ff3b3b;
+  box-shadow: 0 0 8px rgba(255, 59, 59, 0.9);
+}
+
+.vcr__time {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: calc(var(--deck-h) * 9.92 / 124);
+  color: #6ad0ff;
+  text-shadow: 0 0 6px rgba(106, 208, 255, 0.6);
+}
+
+.vcr__progress {
+  display: none;
 }
 
 .vcr__controls {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.6rem;
+  gap: calc(var(--deck-h) * 2.4 / 124);
 }
 
 .vcr-btn {
   display: inline-flex;
-  flex-direction: column;
+  flex: 1 1 0;
+  flex-direction: row;
   align-items: center;
-  gap: 3px;
-  min-width: 56px;
-  padding: 0.5rem 0.6rem;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
+  min-height: calc(var(--deck-h) * 22 / 124);
+  max-height: calc(var(--deck-h) * 22 / 124);
+  padding: calc(var(--deck-h) * 1.6 / 124) calc(var(--deck-h) * 1.28 / 124);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  border-radius: calc(var(--deck-h) * 3 / 124);
   background: linear-gradient(180deg, #3a3a3e 0%, #222226 100%);
   color: rgba(244, 240, 232, 0.85);
-  font-size: 0.85rem;
+  font-size: calc(var(--deck-h) * 8.32 / 124);
   cursor: pointer;
   box-shadow:
     0 2px 0 rgba(0, 0, 0, 0.6),
@@ -947,10 +846,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 }
 
 .vcr-btn__label {
-  font-size: 0.5rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  display: none;
 }
 
 .vcr-btn--primary {
@@ -966,24 +862,20 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   background: linear-gradient(180deg, #e85138 0%, #ab2f1d 100%);
 }
 
-.vcr-btn--primary .vcr-btn__label {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-/* Rotary volume knob */
 .vcr-knob {
   position: relative;
   display: inline-flex;
+  flex: 0 0 auto;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  margin-left: auto;
+  gap: 0;
+  margin-left: calc(var(--deck-h) * 1.28 / 124);
 }
 
 .vcr-knob__dial {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: calc(var(--deck-h) * 22 / 124);
+  height: calc(var(--deck-h) * 22 / 124);
   border-radius: 50%;
   background:
     radial-gradient(circle at 38% 32%, #4a4a4e 0%, #1c1c1f 70%, #111 100%);
@@ -996,10 +888,10 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 
 .vcr-knob__indicator {
   position: absolute;
-  top: 4px;
+  top: calc(var(--deck-h) * 3 / 124);
   left: 50%;
   width: 2px;
-  height: 14px;
+  height: calc(var(--deck-h) * 7 / 124);
   margin-left: -1px;
   border-radius: 1px;
   background: var(--cinematic-white);
@@ -1010,8 +902,8 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   position: absolute;
   inset: 0;
   top: 0;
-  width: 44px;
-  height: 44px;
+  width: calc(var(--deck-h) * 22 / 124);
+  height: calc(var(--deck-h) * 22 / 124);
   margin: 0;
   opacity: 0;
   cursor: pointer;
@@ -1025,10 +917,31 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 }
 
 .vcr-knob__label {
-  font-size: 0.5rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  display: none;
+}
+
+/* Desktop: overlay on shelf player in the photo */
+@media (min-width: 75rem) {
+  .vcr {
+    position: absolute;
+    z-index: 5;
+    left: 27%;
+    width: 30%;
+    bottom: 4%;
+    max-width: none;
+    --deck-h: 124px;
+  }
+}
+
+/* Mobile + tablet: same deck below the image, scaled to full stage width */
+@media (max-width: 74.99rem) {
+  .vcr {
+    position: relative;
+    max-width: none;
+    margin-top: 1.25rem;
+    height: calc(100cqw * 124 / 360);
+    --deck-h: calc(100cqw * 124 / 360);
+  }
 }
 
 /* Cabinet legs */
@@ -1044,125 +957,6 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   border-radius: 0 0 4px 4px;
   background: linear-gradient(180deg, #2a1c10, #160d06);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
-}
-
-/*
- * Tablet + phone: same compact deck as desktop (360×124px artboard), uniformly
- * scaled to the full stage width and placed below the TV image.
- */
-@media (max-width: 74.99rem) {
-  .vcr-scale {
-    margin-top: 1.25rem;
-    height: calc(124px * (100cqw / 360px));
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-  }
-
-  .vcr-scale > .vcr {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    z-index: auto;
-    width: 360px;
-    height: 124px;
-    max-width: none;
-    margin: 0;
-    padding: 0.35rem 0.55rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.25rem;
-    border-radius: 8px;
-    overflow: hidden;
-    flex-shrink: 0;
-    transform: scale(calc(100cqw / 360px));
-    transform-origin: top center;
-  }
-
-  .vcr-scale .vcr__deck {
-    gap: 0.3rem;
-    align-items: stretch;
-  }
-
-  .vcr-scale .vcr__slot {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
-  .vcr-scale .vcr__slot-bezel {
-    height: 50px;
-    width: min(100%, calc(50px * 187 / 103));
-    aspect-ratio: unset;
-    padding: 3px;
-  }
-
-  .vcr-scale .vcr__tape-window {
-    font-size: 0.42rem;
-  }
-
-  .vcr-scale .vcr__display {
-    flex: 0 0 auto;
-    align-self: center;
-    padding: 0.1rem 0.3rem;
-  }
-
-  .vcr-scale .vcr__time {
-    font-size: 0.62rem;
-  }
-
-  .vcr-scale .vcr__led {
-    width: 7px;
-    height: 7px;
-  }
-
-  .vcr-scale .vcr__progress {
-    display: none;
-  }
-
-  .vcr-scale .vcr__controls {
-    flex-wrap: nowrap;
-    gap: 0.15rem;
-    align-items: center;
-  }
-
-  .vcr-scale .vcr-btn {
-    min-width: 0;
-    flex: 1 1 0;
-    flex-direction: row;
-    justify-content: center;
-    padding: 0.1rem 0.08rem;
-    font-size: 0.52rem;
-    border-radius: 3px;
-    gap: 0;
-    min-height: 22px;
-    max-height: 22px;
-  }
-
-  .vcr-scale .vcr-btn__label {
-    display: none;
-  }
-
-  .vcr-scale .vcr-knob {
-    flex: 0 0 auto;
-    margin-left: 0.08rem;
-    gap: 0;
-  }
-
-  .vcr-scale .vcr-knob__dial,
-  .vcr-scale .vcr-knob__input {
-    width: 22px;
-    height: 22px;
-  }
-
-  .vcr-scale .vcr-knob__indicator {
-    height: 7px;
-    top: 3px;
-  }
-
-  .vcr-scale .vcr-knob__label {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
