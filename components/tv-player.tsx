@@ -134,19 +134,32 @@ export function TvPlayer() {
   const startVuLoop = useCallback(() => {
     const analyser = analyserRef.current;
     if (!analyser) return;
-    const data = new Uint8Array(analyser.frequencyBinCount);
+    const timeData = new Uint8Array(analyser.fftSize);
 
     const tick = () => {
-      analyser.getByteFrequencyData(data);
-      const bins = analyser.frequencyBinCount;
+      analyser.getByteTimeDomainData(timeData);
+
+      let sumSq = 0;
+      for (let i = 0; i < timeData.length; i++) {
+        const sample = (timeData[i] - 128) / 128;
+        sumSq += sample * sample;
+      }
+      const rms = Math.sqrt(sumSq / timeData.length);
+      const base = Math.min(1, rms * 3.8);
+
+      // Classic VU bounce — overall level drives all bars with per-bar phase
+      // variation, not a left-heavy frequency spectrum.
+      const t = performance.now() * 0.001;
       const next: number[] = [];
       for (let i = 0; i < VU_BARS; i++) {
-        const start = Math.floor((i / VU_BARS) * bins);
-        const end = Math.max(start + 1, Math.floor(((i + 1) / VU_BARS) * bins));
-        let sum = 0;
-        for (let j = start; j < end; j++) sum += data[j];
-        next.push(Math.min(1, sum / (end - start) / 255));
+        const phase = i * 0.82;
+        const wave =
+          0.52 +
+          0.26 * Math.sin(t * 4.5 + phase) +
+          0.22 * Math.sin(t * 7.1 + phase * 1.6);
+        next.push(Math.min(1, base * wave));
       }
+
       setLevels(next);
       rafRef.current = requestAnimationFrame(tick);
     };
