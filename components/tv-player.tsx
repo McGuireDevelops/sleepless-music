@@ -31,6 +31,7 @@ export function TvPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const rafRef = useRef(0);
   const osdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -39,6 +40,7 @@ export function TvPlayer() {
   const [screen, setScreen] = useState<ScreenState>("off");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [volume, setVolume] = useState(0.8);
+  const volumeRef = useRef(volume);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [osdVisible, setOsdVisible] = useState(false);
@@ -67,8 +69,14 @@ export function TvPlayer() {
   }, []);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) audio.volume = volume * volume;
+    volumeRef.current = volume;
+    // Once routed through Web Audio, <audio>.volume is ignored — drive a GainNode.
+    if (gainRef.current) {
+      gainRef.current.gain.value = volume * volume;
+    } else {
+      const audio = audioRef.current;
+      if (audio) audio.volume = volume * volume;
+    }
   }, [volume]);
 
   const flashOsd = useCallback(() => {
@@ -90,14 +98,18 @@ export function TvPlayer() {
 
       const ctx = new AudioCtx();
       const source = ctx.createMediaElementSource(audio);
+      const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 64;
       analyser.smoothingTimeConstant = 0.75;
-      source.connect(analyser);
+      gain.gain.value = volumeRef.current * volumeRef.current;
+      source.connect(gain);
+      gain.connect(analyser);
       analyser.connect(ctx.destination);
 
       audioCtxRef.current = ctx;
       sourceRef.current = source;
+      gainRef.current = gain;
       analyserRef.current = analyser;
     } catch {
       // Analyser is a visual enhancement only; ignore failures.
