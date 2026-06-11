@@ -1051,6 +1051,10 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
  * full width below the TV. Desktop rules above are not modified.
  */
 @media (max-width: 74.99rem) {
+  .crt__chyron {
+    display: none;
+  }
+
   .vcr-scale {
     margin-top: 1.25rem;
     height: calc(124px * (100cqw / 360px));
