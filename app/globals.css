@@ -780,6 +780,18 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   }
 }
 
+/*
+ * Laptop/desktop-narrow: scene is shorter but VCR stayed 124px fixed, so the
+ * deck poked above the shelf cubby. Scale down and sit lower; large desktop unchanged.
+ */
+@media (min-width: 75rem) and (max-width: 92rem) {
+  .vcr {
+    bottom: 2%;
+    transform: scale(0.9);
+    transform-origin: bottom center;
+  }
+}
+
 /* Deck row: VHS slot + timer */
 .vcr__deck {
   display: flex;
