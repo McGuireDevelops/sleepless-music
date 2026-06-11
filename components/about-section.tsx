@@ -66,7 +66,7 @@ export function AboutSection() {
                 href={site.avidCertifiedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block transition-opacity hover:opacity-90"
+                className="mx-auto block w-fit transition-opacity hover:opacity-90"
                 aria-label={site.avidCertifiedBadgeAlt}
               >
                 <Image
