@@ -317,9 +317,7 @@ export function TvPlayer() {
   const screenStyle: CSSProperties = {
     top: `${rect.top}%`,
     left: `${rect.left}%`,
-    width: isMobileLayout
-      ? `${rect.width}%`
-      : `calc(${rect.width}% + 15px)`,
+    width: `calc(${rect.width}% + 15px)`,
     height: `${rect.height}%`,
   };
 
