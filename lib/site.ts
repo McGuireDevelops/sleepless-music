@@ -22,6 +22,8 @@ export const site = {
    * tuned to sit exactly over the CRT tube. Adjust if the art changes.
    */
   tvScreenRect: { top: 27, left: 29, width: 40, height: 46.5 },
+  /** Power switch / knob on the TV cabinet (percent of scene image). */
+  tvPowerRect: { top: 59, left: 71, width: 7, height: 11 },
   /**
    * Demo reel tracks for the native TV/VCR player.
    * Drop audio files into `public/audio/` and update the `src` paths.
