@@ -449,7 +449,6 @@ export function TvPlayer() {
             <span className="vcr__led" data-on={isPlaying} />
             <span className="vcr__time">
               {formatTime(currentTime)}
-              {duration > 0 ? ` / ${formatTime(duration)}` : ""}
             </span>
           </span>
         </div>
