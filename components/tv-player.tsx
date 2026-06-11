@@ -109,7 +109,7 @@ export function TvPlayer() {
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.25;
+      analyser.smoothingTimeConstant = 0.38;
       gain.gain.value = volumeRef.current * volumeRef.current;
       source.connect(gain);
       gain.connect(analyser);
@@ -169,7 +169,7 @@ export function TvPlayer() {
         const freqLevel = fSum / bandCount / 255;
 
         const level = waveLevel * 0.65 + freqLevel * 0.35;
-        next.push(Math.min(1, level * 16));
+        next.push(Math.min(1, level * 7));
       }
 
       setLevels(next);
