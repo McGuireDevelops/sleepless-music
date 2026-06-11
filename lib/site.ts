@@ -15,13 +15,17 @@ export const site = {
   contactEmail: "info@sleeplessmusic.com",
   musicHeading: "Music",
   musicIntro: "Selected works for film, games, and contemporary media.",
-  /** Photoreal CRT scene used as the music player backdrop. */
-  tvScene: "/images/tv-scene-v4.png",
+  /** Photoreal CRT scene — desktop (v3, no painted VHS in shelf). */
+  tvSceneDesktop: "/images/tv-scene-v3.png",
+  /** Photoreal CRT scene — mobile (v4, VHS painted in shelf). */
+  tvSceneMobile: "/images/tv-scene-v4.png",
   /**
    * Live-screen overlay rectangle as percentages of the scene image,
    * tuned to sit exactly over the CRT tube. Adjust if the art changes.
    */
   tvScreenRect: { top: 27, left: 29, width: 40, height: 46.5 },
+  /** Mobile CRT overlay — narrower so it does not spill onto the speaker grille. */
+  tvScreenRectMobile: { top: 27, left: 29, width: 38, height: 46.5 },
   /** Power switch / knob on the TV cabinet (percent of scene image). */
   tvPowerRect: { top: 59, left: 71, width: 7, height: 11 },
   /**

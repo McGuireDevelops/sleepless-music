@@ -26,7 +26,6 @@ function formatTime(seconds: number): string {
 export function TvPlayer() {
   const tracks = site.tracks;
   const hasTracks = tracks.length > 0;
-  const rect = site.tvScreenRect;
   const powerRect = site.tvPowerRect;
 
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -46,6 +45,7 @@ export function TvPlayer() {
   const [duration, setDuration] = useState(0);
   const [osdVisible, setOsdVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
   const [levels, setLevels] = useState<number[]>(() =>
     new Array(VU_BARS).fill(0),
   );
@@ -57,6 +57,14 @@ export function TvPlayer() {
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => setReducedMotion(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 74.99rem)");
+    const update = () => setIsMobileLayout(mq.matches);
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
@@ -305,10 +313,13 @@ export function TvPlayer() {
   const volumeAngle = -135 + volume * 270;
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
+  const rect = isMobileLayout ? site.tvScreenRectMobile : site.tvScreenRect;
   const screenStyle: CSSProperties = {
     top: `${rect.top}%`,
     left: `${rect.left}%`,
-    width: `calc(${rect.width}% + 15px)`,
+    width: isMobileLayout
+      ? `${rect.width}%`
+      : `calc(${rect.width}% + 15px)`,
     height: `${rect.height}%`,
   };
 
@@ -344,12 +355,22 @@ export function TvPlayer() {
       {/* ── Photoreal scene with live CRT overlay ── */}
       <div className="tv-scene">
         <Image
-          src={site.tvScene}
+          src={site.tvSceneDesktop}
+          alt=""
+          width={1536}
+          height={1024}
+          className="tv-scene__img tv-scene__img--desktop"
+          sizes="(min-width: 75rem) 64rem, 0px"
+          priority={false}
+          aria-hidden
+        />
+        <Image
+          src={site.tvSceneMobile}
           alt="Vintage television in a dark listening room"
           width={1536}
           height={1024}
-          className="tv-scene__img"
-          sizes="(max-width: 48rem) 100vw, 64rem"
+          className="tv-scene__img tv-scene__img--mobile"
+          sizes="(max-width: 74.99rem) 100vw, 0px"
           priority={false}
         />
 

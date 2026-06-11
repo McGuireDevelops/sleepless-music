@@ -353,6 +353,25 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   pointer-events: none;
 }
 
+/* Desktop scene (v3); mobile scene (v4 with painted VHS in shelf) */
+.tv-scene__img--desktop {
+  display: none;
+}
+
+.tv-scene__img--mobile {
+  display: block;
+}
+
+@media (min-width: 75rem) {
+  .tv-scene__img--desktop {
+    display: block;
+  }
+
+  .tv-scene__img--mobile {
+    display: none;
+  }
+}
+
 /* Invisible hit target over the TV power switch / knob in the photo */
 .tv-power {
   position: absolute;
