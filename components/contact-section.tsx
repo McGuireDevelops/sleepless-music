@@ -15,7 +15,7 @@ export function ContactSection() {
           </h2>
         </ScrollReveal>
         <ScrollReveal delayMs={120}>
-          <p className="mt-8 text-sm leading-relaxed text-sand/65">
+          <p className="mt-8 text-base leading-7 text-white md:text-lg md:leading-8">
             For scoring enquiries, collaborations, and licensing, get in touch.
           </p>
         </ScrollReveal>
