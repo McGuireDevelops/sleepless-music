@@ -323,7 +323,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   width: 100%;
   max-width: min(95vw, 96rem);
   margin-inline: auto;
-  container-type: size;
+  container-type: inline-size;
   container-name: tv-stage;
 }
 
@@ -679,22 +679,12 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 /* Desktop only: place controls inside the image over the shelf player */
 @media (min-width: 75rem) {
   .vcr {
-    /*
-     * Scene height scales with viewport; 124px fixed made the deck too tall on
-     * laptops. Scale to artboard proportion (1024px tall) and widen pre-scale
-     * so uniform scale does not expose the static VCR at the sides.
-     */
-    --vcr-fit: min(1, calc(100cqh / 1024px));
-    --vcr-sx: var(--vcr-fit);
-    --vcr-sy: calc(var(--vcr-fit) * (0.94 + 0.06 * var(--vcr-fit)));
     position: absolute;
     z-index: 5;
     left: 27%;
-    width: calc(30% / var(--vcr-sx));
-    bottom: calc(4% + (1 - var(--vcr-fit)) * 4%);
+    width: 30%;
+    bottom: 4%;
     height: 124px;
-    transform: scale(var(--vcr-sx), var(--vcr-sy));
-    transform-origin: bottom center;
     margin-top: 0;
     padding: 0.35rem 0.55rem;
     display: flex;
