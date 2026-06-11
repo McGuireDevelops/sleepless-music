@@ -27,9 +27,10 @@ export const site = {
    * Drop audio files into `public/audio/` and update the `src` paths.
    */
   tracks: [
-    { title: "Cue One", src: "/audio/track-01.mp3" },
-    { title: "Cue Two", src: "/audio/track-02.mp3" },
-    { title: "Cue Three", src: "/audio/track-03.mp3" },
+    { title: "In Space", src: "/audio/in-space.wav" },
+    { title: "Heavy Is The Crown", src: "/audio/heavy-is-the-crown.wav" },
+    { title: "Adrift", src: "/audio/adrift.wav" },
+    { title: "The Collapse", src: "/audio/the-collapse.wav" },
   ],
   socialImage: "/og-share.png",
   socialImageWidth: 1200,
