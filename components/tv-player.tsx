@@ -305,13 +305,10 @@ export function TvPlayer() {
   const volumeAngle = -135 + volume * 270;
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
-  // +0.98% width nudge scales with the scene (was a fixed 15px on a 1536px-wide artboard).
-  const screenWidthOffsetPct = (15 / 1536) * 100;
-
   const screenStyle: CSSProperties = {
     top: `${rect.top}%`,
     left: `${rect.left}%`,
-    width: `calc(${rect.width}% + ${screenWidthOffsetPct}%)`,
+    width: `calc(${rect.width}% + 15px)`,
     height: `${rect.height}%`,
   };
 
@@ -412,16 +409,17 @@ export function TvPlayer() {
           <span className="crt__glass" aria-hidden />
           {screen === "powering" && <span className="crt__powerline" aria-hidden />}
         </button>
+      </div>
 
-        {/* ── VCR deck overlaid on the shelf player in the photo ── */}
-        <div
-          id="player-controls"
-          className="vcr scroll-mt-0 scroll-mb-4"
-          role="group"
-          aria-label="VCR controls"
-          data-on={isOn}
-          data-playing={isPlaying}
-        >
+      {/* ── Visible, usable VCR control deck ── */}
+      <div
+        id="player-controls"
+        className="vcr scroll-mt-0 scroll-mb-4"
+        role="group"
+        aria-label="VCR controls"
+        data-on={isOn}
+        data-playing={isPlaying}
+      >
         <div className="vcr__deck">
           <div className="vcr__slot" aria-hidden>
             <div className="vcr__slot-bezel">
@@ -515,7 +513,6 @@ export function TvPlayer() {
             />
             <span className="vcr-knob__label">Vol</span>
           </div>
-        </div>
         </div>
       </div>
       </div>

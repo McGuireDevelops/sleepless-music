@@ -54,10 +54,11 @@ export const site = {
     facebook: "https://www.facebook.com/McGuireOfficial/",
     spotify: "",
   },
+  april28FilmUrl: "https://www.april28film.com",
   about: [
     "Robert McGuire is an emerging composer based in Dublin, Ireland, working across film, games, and contemporary media. Robert has an innate dramatic sensibility and is an exquisite storyteller with music appealing to modern audiences.",
-    "His background in audio began with an Advanced Diploma in Sound Engineering and Music Production from Pulse College in 2008, laying the foundation for a career shaped by both technical expertise and creative exploration. Since then, Robert has built extensive experience in composition, and music production, refining his craft through a combination of formal training and hands-on professional work.",
-    "In November 2025, he graduated from the Film Scoring Academy of Europe, where he further developed his voice as a composer, with a focus on orchestration and narrative-driven music. Robert is currently undertaking MA in Professional Media Composition with ThinkSpace Education, while composing the score for the upcoming short film \"April 28.\"",
+    "His background in audio began with an Advanced Diploma in Sound Engineering and Music Production from Pulse College in 2008, laying the foundation for a career shaped by both technical expertise and creative exploration. Since then, Robert has built extensive experience in composition and music production.",
+    "In November 2025, he graduated from the Film Scoring Academy of Europe, where he further developed his voice as a composer. Robert is currently composing the score for the upcoming short film \"April 28.\"",
   ],
 } as const;
 

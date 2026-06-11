@@ -2,6 +2,29 @@ import Image from "next/image";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { site } from "@/lib/site";
 
+const aboutLinkClass =
+  "text-gold/90 underline-offset-2 transition hover:text-gold hover:underline";
+
+function AboutParagraph({ text }: { text: string }) {
+  if (!text.includes("April 28")) return text;
+
+  const [before, after] = text.split("April 28");
+  return (
+    <>
+      {before}
+      <a
+        href={site.april28FilmUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={aboutLinkClass}
+      >
+        April 28
+      </a>
+      {after}
+    </>
+  );
+}
+
 export function AboutSection() {
   return (
     <section
@@ -33,7 +56,7 @@ export function AboutSection() {
             {site.about.map((paragraph, i) => (
               <ScrollReveal key={i} delayMs={i * 80}>
                 <p className="text-base leading-7 text-white md:text-lg md:leading-8">
-                  {paragraph}
+                  <AboutParagraph text={paragraph} />
                 </p>
               </ScrollReveal>
             ))}
