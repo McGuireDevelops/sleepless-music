@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ListenCta } from "@/components/listen-cta";
 import { VhsOverlay } from "@/components/vhs-overlay";
 import { site } from "@/lib/site";
 
@@ -43,12 +44,7 @@ export function Hero() {
         </div>
 
         <div className="hero-cta absolute inset-x-0 bottom-24 flex justify-center md:bottom-[116px]">
-          <a
-            href="#music"
-            className="rounded-sm border border-gold/60 bg-gold/10 px-8 py-3 text-xs tracking-[0.25em] text-gold uppercase transition hover:border-gold hover:bg-gold/20"
-          >
-            Listen
-          </a>
+          <ListenCta />
         </div>
       </div>
 

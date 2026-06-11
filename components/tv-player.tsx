@@ -369,7 +369,8 @@ export function TvPlayer() {
 
       {/* ── Visible, usable VCR control deck ── */}
       <div
-        className="vcr"
+        id="player-controls"
+        className="vcr scroll-mt-0 scroll-mb-4"
         role="group"
         aria-label="VCR controls"
         data-on={isOn}
