@@ -1051,7 +1051,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
  * full width below the TV. Desktop rules above are not modified.
  */
 @media (max-width: 74.99rem) {
-  .crt__chyron {
+  .crt__chyron-label {
     display: none;
   }
 
