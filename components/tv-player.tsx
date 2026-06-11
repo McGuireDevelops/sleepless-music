@@ -108,8 +108,8 @@ export function TvPlayer() {
       const source = ctx.createMediaElementSource(audio);
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 64;
-      analyser.smoothingTimeConstant = 0.45;
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.25;
       gain.gain.value = volumeRef.current * volumeRef.current;
       source.connect(gain);
       gain.connect(analyser);
@@ -133,29 +133,43 @@ export function TvPlayer() {
     const analyser = analyserRef.current;
     if (!analyser) return;
     const timeData = new Uint8Array(analyser.fftSize);
+    const freqData = new Uint8Array(analyser.frequencyBinCount);
+    const sliceLen = Math.floor(timeData.length / VU_BARS);
 
     const tick = () => {
       analyser.getByteTimeDomainData(timeData);
+      analyser.getByteFrequencyData(freqData);
+      const bins = freqData.length;
 
-      let sumSq = 0;
-      for (let i = 0; i < timeData.length; i++) {
-        const sample = (timeData[i] - 128) / 128;
-        sumSq += sample * sample;
-      }
-      const rms = Math.sqrt(sumSq / timeData.length);
-      const base = Math.min(1, rms * 10);
-
-      // Classic VU bounce — overall level drives all bars with per-bar phase
-      // variation, not a left-heavy frequency spectrum.
-      const t = performance.now() * 0.001;
       const next: number[] = [];
       for (let i = 0; i < VU_BARS; i++) {
-        const phase = i * 0.82;
-        const wave =
-          0.35 +
-          0.38 * Math.sin(t * 6.5 + phase) +
-          0.27 * Math.sin(t * 10.2 + phase * 1.6);
-        next.push(Math.min(1, base * wave));
+        const tStart = i * sliceLen;
+        const tEnd = i === VU_BARS - 1 ? timeData.length : tStart + sliceLen;
+
+        let sumSq = 0;
+        let peak = 0;
+        for (let j = tStart; j < tEnd; j++) {
+          const sample = (timeData[j] - 128) / 128;
+          sumSq += sample * sample;
+          peak = Math.max(peak, Math.abs(sample));
+        }
+        const rms = Math.sqrt(sumSq / (tEnd - tStart));
+        const waveLevel = rms * 0.55 + peak * 0.45;
+
+        const fStart = Math.floor((bins ** (i / VU_BARS)) - 1);
+        const fEnd = Math.max(
+          fStart + 1,
+          Math.floor(bins ** ((i + 1) / VU_BARS)) - 1,
+        );
+        let fSum = 0;
+        for (let j = Math.max(0, fStart); j < Math.min(bins, fEnd); j++) {
+          fSum += freqData[j];
+        }
+        const bandCount = Math.max(1, Math.min(bins, fEnd) - Math.max(0, fStart));
+        const freqLevel = fSum / bandCount / 255;
+
+        const level = waveLevel * 0.65 + freqLevel * 0.35;
+        next.push(Math.min(1, level * 16));
       }
 
       setLevels(next);

@@ -476,12 +476,16 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
     rgba(60, 120, 200, 0.55) 100%
   );
   box-shadow: 0 0 8px rgba(150, 200, 255, 0.55);
-  transition: height 0.05s linear;
+}
+
+.tv-player[data-screen="playing"] .crt__bar {
+  transition: none;
 }
 
 .tv-player[data-screen="paused"] .crt__bar {
   height: 8%;
   opacity: 0.5;
+  transition: height 0.12s ease-out;
 }
 
 /* On-screen OSD: TRACK NN */
