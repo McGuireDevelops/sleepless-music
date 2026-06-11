@@ -323,6 +323,12 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   width: 100%;
   max-width: min(95vw, 96rem);
   margin-inline: auto;
+  container-type: inline-size;
+  container-name: tv-stage;
+}
+
+.vcr-scale {
+  width: 100%;
 }
 
 /* Photoreal room + television scene */
@@ -1040,63 +1046,122 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Tablet + phone: deck below scene, VHS slot + timer match desktop proportions */
+/*
+ * Tablet + phone: same compact deck as desktop (360×124px artboard), uniformly
+ * scaled to the full stage width and placed below the TV image.
+ */
 @media (max-width: 74.99rem) {
-  .vcr {
+  .vcr-scale {
     margin-top: 1.25rem;
-  }
-
-  .vcr__deck {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .vcr__slot {
-    min-width: 0;
-  }
-
-  /* 50px is for the in-image desktop overlay only; mobile scales up with VHS ratio intact */
-  .vcr__slot-bezel {
-    width: min(100%, calc(110px * 187 / 103));
-    aspect-ratio: 187 / 103;
-    height: auto;
-    padding: 3px;
-  }
-
-  .vcr__tape-window {
-    font-size: clamp(0.42rem, 2.8vw, 0.55rem);
-  }
-
-  .vcr__display {
-    flex: 0 0 auto;
-    align-self: center;
-    padding: 0.2rem 0.5rem;
-  }
-
-  .vcr__time {
-    font-size: 0.75rem;
-  }
-
-  .vcr__led {
-    width: 9px;
-    height: 9px;
-  }
-}
-
-@media (max-width: 34rem) {
-  .vcr__controls {
+    height: calc(124px * (100cqw / 360px));
+    overflow: hidden;
+    display: flex;
     justify-content: center;
   }
 
-  .vcr-btn {
-    min-width: 44px;
-    padding: 0.4rem 0.35rem;
+  .vcr-scale > .vcr {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    z-index: auto;
+    width: 360px;
+    height: 124px;
+    max-width: none;
+    margin: 0;
+    padding: 0.35rem 0.55rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    transform: scale(calc(100cqw / 360px));
+    transform-origin: top center;
   }
 
-  .vcr-knob {
-    margin-left: 0;
+  .vcr-scale .vcr__deck {
+    gap: 0.3rem;
+    align-items: stretch;
+  }
+
+  .vcr-scale .vcr__slot {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .vcr-scale .vcr__slot-bezel {
+    height: 50px;
+    width: min(100%, calc(50px * 187 / 103));
+    aspect-ratio: unset;
+    padding: 3px;
+  }
+
+  .vcr-scale .vcr__tape-window {
+    font-size: 0.42rem;
+  }
+
+  .vcr-scale .vcr__display {
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 0.1rem 0.3rem;
+  }
+
+  .vcr-scale .vcr__time {
+    font-size: 0.62rem;
+  }
+
+  .vcr-scale .vcr__led {
+    width: 7px;
+    height: 7px;
+  }
+
+  .vcr-scale .vcr__progress {
+    display: none;
+  }
+
+  .vcr-scale .vcr__controls {
+    flex-wrap: nowrap;
+    gap: 0.15rem;
+    align-items: center;
+  }
+
+  .vcr-scale .vcr-btn {
+    min-width: 0;
+    flex: 1 1 0;
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.1rem 0.08rem;
+    font-size: 0.52rem;
+    border-radius: 3px;
+    gap: 0;
+    min-height: 22px;
+    max-height: 22px;
+  }
+
+  .vcr-scale .vcr-btn__label {
+    display: none;
+  }
+
+  .vcr-scale .vcr-knob {
+    flex: 0 0 auto;
+    margin-left: 0.08rem;
+    gap: 0;
+  }
+
+  .vcr-scale .vcr-knob__dial,
+  .vcr-scale .vcr-knob__input {
+    width: 22px;
+    height: 22px;
+  }
+
+  .vcr-scale .vcr-knob__indicator {
+    height: 7px;
+    top: 3px;
+  }
+
+  .vcr-scale .vcr-knob__label {
+    display: none;
   }
 }
 
