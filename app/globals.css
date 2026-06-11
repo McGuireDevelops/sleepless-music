@@ -664,8 +664,8 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
     inset 0 -3px 10px rgba(0, 0, 0, 0.55);
 }
 
-/* On larger screens, place the controls inside the image over the shelf player */
-@media (min-width: 48rem) {
+/* Desktop only: place controls inside the image over the shelf player */
+@media (min-width: 75rem) {
   .vcr {
     position: absolute;
     z-index: 5;
@@ -1040,17 +1040,51 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 34rem) {
+/* Tablet + phone: deck below scene, VHS slot + timer match desktop proportions */
+@media (max-width: 74.99rem) {
+  .vcr {
+    margin-top: 1.25rem;
+  }
+
   .vcr__deck {
-    flex-wrap: wrap;
-    gap: 0.4rem;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .vcr__slot {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  .vcr__slot-bezel {
+    height: 50px;
+    width: calc(50px * 187 / 103);
+    aspect-ratio: unset;
+    padding: 3px;
+  }
+
+  .vcr__tape-window {
+    font-size: 0.42rem;
   }
 
   .vcr__display {
-    flex: 1 1 auto;
-    min-width: 5.5rem;
+    flex: 0 0 auto;
+    align-self: center;
+    padding: 0.2rem 0.5rem;
   }
 
+  .vcr__time {
+    font-size: 0.75rem;
+  }
+
+  .vcr__led {
+    width: 9px;
+    height: 9px;
+  }
+}
+
+@media (max-width: 34rem) {
   .vcr__controls {
     justify-content: center;
   }
