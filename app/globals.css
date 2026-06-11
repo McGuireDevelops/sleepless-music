@@ -479,7 +479,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 }
 
 .tv-player[data-screen="playing"] .crt__bar {
-  transition: none;
+  transition: height 0.14s ease-out;
 }
 
 .tv-player[data-screen="paused"] .crt__bar {

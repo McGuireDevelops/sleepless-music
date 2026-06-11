@@ -32,6 +32,7 @@ export function TvPlayer() {
   const gainRef = useRef<GainNode | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const rafRef = useRef(0);
+  const vuSmoothRef = useRef<number[]>(new Array(VU_BARS).fill(0));
   const osdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const powerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -109,7 +110,7 @@ export function TvPlayer() {
       const gain = ctx.createGain();
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.38;
+      analyser.smoothingTimeConstant = 0.72;
       gain.gain.value = volumeRef.current * volumeRef.current;
       source.connect(gain);
       gain.connect(analyser);
@@ -126,6 +127,7 @@ export function TvPlayer() {
 
   const stopVuLoop = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
+    vuSmoothRef.current = new Array(VU_BARS).fill(0);
     setLevels(new Array(VU_BARS).fill(0));
   }, []);
 
@@ -154,7 +156,7 @@ export function TvPlayer() {
           peak = Math.max(peak, Math.abs(sample));
         }
         const rms = Math.sqrt(sumSq / (tEnd - tStart));
-        const waveLevel = rms * 0.55 + peak * 0.45;
+        const waveLevel = rms * 0.82 + peak * 0.18;
 
         const fStart = Math.floor((bins ** (i / VU_BARS)) - 1);
         const fEnd = Math.max(
@@ -169,7 +171,12 @@ export function TvPlayer() {
         const freqLevel = fSum / bandCount / 255;
 
         const level = waveLevel * 0.65 + freqLevel * 0.35;
-        next.push(Math.min(1, level * 7));
+        const target = Math.min(1, level * 4);
+        const prev = vuSmoothRef.current[i] ?? 0;
+        const coeff = target > prev ? 0.28 : 0.1;
+        const smoothed = prev + (target - prev) * coeff;
+        vuSmoothRef.current[i] = smoothed;
+        next.push(smoothed);
       }
 
       setLevels(next);
