@@ -686,34 +686,51 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   }
 
   .vcr__progress {
-    margin-bottom: 0;
+    display: none;
+  }
+
+  .vcr__slot {
+    flex: 0 0 auto;
   }
 
   .vcr__controls {
     flex-wrap: nowrap;
-    gap: 0.35rem;
+    gap: 0.2rem;
   }
 
   .vcr-btn {
     min-width: 0;
     flex: 1 1 0;
-    padding: 0.3rem 0.2rem;
-    font-size: 0.75rem;
+    padding: 0.12rem 0.1rem;
+    font-size: 0.58rem;
+    border-radius: 4px;
+    gap: 1px;
   }
 
   .vcr-btn__label {
-    font-size: 0.45rem;
+    font-size: 0.34rem;
+    letter-spacing: 0.12em;
   }
 
   .vcr-knob {
     flex: 0 0 auto;
-    margin-left: 0.15rem;
+    margin-left: 0.1rem;
+    gap: 1px;
   }
 
   .vcr-knob__dial,
   .vcr-knob__input {
-    width: 34px;
-    height: 34px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .vcr-knob__indicator {
+    height: 9px;
+    top: 3px;
+  }
+
+  .vcr-knob__label {
+    font-size: 0.34rem;
   }
 }
 
@@ -782,6 +799,100 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
   font-size: 0.75rem;
   color: #6ad0ff;
   text-shadow: 0 0 6px rgba(106, 208, 255, 0.6);
+}
+
+/* Front-loading VHS slot */
+.vcr__slot {
+  width: 100%;
+}
+
+.vcr__slot-bezel {
+  position: relative;
+  padding: 3px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #4a4a50 0%, #2a2a2e 55%, #1a1a1c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.vcr__slot-bezel::after {
+  content: "VHS";
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  font-size: 0.42rem;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+.vcr__slot-mouth {
+  position: relative;
+  height: 22px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #050505;
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.vcr__cassette {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 72%;
+  height: 16px;
+  padding: 0 5px;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, #1e1e22 0%, #0a0a0c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: none;
+  transform: translateX(-50%);
+  transition: bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vcr__cassette--in {
+  bottom: 1px;
+}
+
+.vcr__cassette-reel {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #3a3a3e 0%, #111 70%);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+.vcr[data-playing="true"] .vcr__cassette-reel {
+  animation: vcr-reel-spin 1.4s linear infinite;
+}
+
+@keyframes vcr-reel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vcr__cassette-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.38rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #d4c49a;
+  text-shadow: 0 0 3px rgba(200, 184, 138, 0.35);
 }
 
 .vcr__progress {
@@ -1018,7 +1129,12 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 
   .crt__bar,
   .vcr__progress-fill,
-  .vcr-knob__dial {
+  .vcr-knob__dial,
+  .vcr__cassette {
     transition: none;
+  }
+
+  .vcr__cassette-reel {
+    animation: none;
   }
 }

@@ -368,7 +368,13 @@ export function TvPlayer() {
       </div>
 
       {/* ── Visible, usable VCR control deck ── */}
-      <div className="vcr" role="group" aria-label="VCR controls">
+      <div
+        className="vcr"
+        role="group"
+        aria-label="VCR controls"
+        data-on={isOn}
+        data-playing={isPlaying}
+      >
         <div className="vcr__top">
           <span
             className={`vcr__clock ${reducedMotion ? "" : "vcr__clock--blink"}`}
@@ -386,6 +392,22 @@ export function TvPlayer() {
               {duration > 0 ? ` / ${formatTime(duration)}` : ""}
             </span>
           </span>
+        </div>
+
+        <div className="vcr__slot" aria-hidden>
+          <div className="vcr__slot-bezel">
+            <div className="vcr__slot-mouth">
+              <div
+                className={`vcr__cassette ${isOn ? "vcr__cassette--in" : ""}`}
+              >
+                <span className="vcr__cassette-reel" />
+                <span className="vcr__cassette-label">
+                  {currentTrack?.title ?? "DEMO REEL"}
+                </span>
+                <span className="vcr__cassette-reel" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="vcr__progress" aria-hidden>
