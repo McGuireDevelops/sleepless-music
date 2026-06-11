@@ -89,7 +89,6 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
 }
 
 #music,
-#work,
 #about,
 #contact {
   content-visibility: auto;

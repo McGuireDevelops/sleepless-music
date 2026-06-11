@@ -383,7 +383,7 @@ export function TvPlayer() {
             12:00
           </span>
           <span className="vcr__nowplaying" aria-hidden>
-            {isOn ? `TRACK ${trackNumber} · ${currentTrack?.title ?? ""}` : "— — —"}
+            {isOn ? `TRACK ${trackNumber} · ${currentTrack?.title ?? ""}` : "- - -"}
           </span>
           <span className="vcr__display" aria-hidden>
             <span className="vcr__led" data-on={isPlaying} />

@@ -4,7 +4,7 @@ const DOMAIN = "https://www.sleeplessmusic.com";
 export const site = {
   url: DOMAIN,
   title: "Sleepless Music",
-  pageTitle: "Robert McGuire — Sleepless Music",
+  pageTitle: "Robert McGuire | Sleepless Music",
   artistName: "Robert McGuire",
   tagline: "Composer for contemporary media",
   brandLine: "Sleepless Music",
@@ -14,7 +14,7 @@ export const site = {
   jobTitle: "Composer",
   contactEmail: "info@sleeplessmusic.com",
   musicHeading: "Music",
-  musicIntro: "Selected works — film, games, and contemporary media.",
+  musicIntro: "Selected works for film, games, and contemporary media.",
   /** Photoreal CRT scene used as the music player backdrop. */
   tvScene: "/images/tv-scene-v3.png",
   /**
@@ -37,11 +37,11 @@ export const site = {
   socialImageHeight: 630,
   heroImage: "/images/hero.webp",
   heroImageAlt:
-    "Robert McGuire — composer for film, TV, and video games. Photography by Michael Robert Williams.",
+    "Robert McGuire, composer for film, TV, and video games. Photography by Michael Robert Williams.",
   aboutPortrait: "/images/about-portrait.webp",
-  aboutPortraitAlt: "Robert McGuire — composer portrait",
+  aboutPortraitAlt: "Robert McGuire, composer portrait",
   logoImage: "/images/logo-white.png",
-  logoAlt: "McGuire — Sleepless Music",
+  logoAlt: "McGuire, Sleepless Music",
   avidCertifiedBadge: "/images/avid-certified-pro-tools-specialist.png",
   avidCertifiedBadgeAlt: "Avid Certified Pro Tools Specialist",
   avidCertifiedUrl:
@@ -56,15 +56,6 @@ export const site = {
     "Robert McGuire is an emerging composer based in Dublin, Ireland, working across film, games, and contemporary media. Robert has an innate dramatic sensibility and is an exquisite storyteller with music appealing to modern audiences.",
     "His background in audio began with an Advanced Diploma in Sound Engineering and Music Production from Pulse College in 2008, laying the foundation for a career shaped by both technical expertise and creative exploration. Since then, Robert has built extensive experience in composition, and music production, refining his craft through a combination of formal training and hands-on professional work.",
     "In November 2025, he graduated from the Film Scoring Academy of Europe, where he further developed his voice as a composer, with a focus on orchestration and narrative-driven music. Robert is currently undertaking MA in Professional Media Composition with ThinkSpace Education, while composing the score for the upcoming short film \"April 28.\"",
-  ],
-  work: [
-    {
-      title: "April 28",
-      role: "Original Music",
-      year: "2026",
-      description: "Short film — drama inspired by true events.",
-      href: "https://www.april28film.com",
-    },
   ],
 } as const;
 
@@ -89,7 +80,6 @@ export const socialLinks = socialEntries;
 
 export const navLinks = [
   { href: "/#music", label: "Music" },
-  { href: "/#work", label: "Work" },
   { href: "/#about", label: "About" },
   { href: "/#contact", label: "Contact" },
 ] as const;

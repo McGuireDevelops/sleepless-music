@@ -16,7 +16,7 @@ export function ContactSection() {
         </ScrollReveal>
         <ScrollReveal delayMs={120}>
           <p className="mt-8 text-sm leading-relaxed text-sand/65">
-            For scoring enquiries, collaborations, and licensing — get in touch.
+            For scoring enquiries, collaborations, and licensing, get in touch.
           </p>
         </ScrollReveal>
         <ScrollReveal delayMs={200}>

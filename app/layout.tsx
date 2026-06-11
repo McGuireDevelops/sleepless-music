@@ -56,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
           width: site.socialImageWidth,
           height: site.socialImageHeight,
           type: "image/png",
-          alt: `${site.artistName} — ${site.title}`,
+          alt: `${site.artistName}, ${site.title}`,
         },
       ],
     },

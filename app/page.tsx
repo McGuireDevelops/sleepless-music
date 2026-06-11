@@ -4,8 +4,6 @@ import { Hero } from "@/components/hero";
 import { MusicSection } from "@/components/music-section";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
-import { WorkSection } from "@/components/work-section";
-
 export default function Home() {
   return (
     <>
@@ -13,7 +11,6 @@ export default function Home() {
       <main>
         <Hero />
         <MusicSection />
-        <WorkSection />
         <AboutSection />
         <ContactSection />
       </main>

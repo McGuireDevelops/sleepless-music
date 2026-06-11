@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export function MusicSection() {
   return (
-    <section id="music" className="relative bg-navy-mid py-28 md:py-36">
+    <section id="music" className="relative bg-[#080f1a] py-28 md:py-36">
       <div className="mx-auto max-w-4xl px-6 md:px-10">
         <ScrollReveal>
           <h2 className="text-center text-[22px] font-normal tracking-[0.4em] text-gold/80 uppercase">

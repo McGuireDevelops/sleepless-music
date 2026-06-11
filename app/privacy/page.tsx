@@ -5,7 +5,7 @@ import { SiteNav } from "@/components/site-nav";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Privacy Policy — ${site.pageTitle}`,
+  title: `Privacy Policy | ${site.pageTitle}`,
   description: `How ${site.title} handles your information when you visit our website.`,
   robots: { index: true, follow: true },
   alternates: { canonical: `${site.url}/privacy` },
