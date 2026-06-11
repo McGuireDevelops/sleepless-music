@@ -343,14 +343,13 @@ export function TvPlayer() {
       <div className="tv-stage">
       {/* ── Photoreal scene with live CRT overlay ── */}
       <div className="tv-scene">
-        <div className="tv-scene__inner">
         <Image
           src={site.tvScene}
           alt="Vintage television in a dark listening room"
           width={1536}
           height={1024}
           className="tv-scene__img"
-          sizes="(max-width: 74.99rem) 100vw, 64rem"
+          sizes="(max-width: 48rem) 100vw, 64rem"
           priority={false}
         />
 
@@ -410,7 +409,6 @@ export function TvPlayer() {
           <span className="crt__glass" aria-hidden />
           {screen === "powering" && <span className="crt__powerline" aria-hidden />}
         </button>
-        </div>
       </div>
 
       {/* ── Visible, usable VCR control deck ── */}
