@@ -143,7 +143,7 @@ export function TvPlayer() {
         sumSq += sample * sample;
       }
       const rms = Math.sqrt(sumSq / timeData.length);
-      const base = Math.min(1, rms * 6.5);
+      const base = Math.min(1, rms * 10);
 
       // Classic VU bounce — overall level drives all bars with per-bar phase
       // variation, not a left-heavy frequency spectrum.
