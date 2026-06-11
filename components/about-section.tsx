@@ -32,7 +32,7 @@ export function AboutSection() {
           <div className="space-y-6">
             {site.about.map((paragraph, i) => (
               <ScrollReveal key={i} delayMs={i * 80}>
-                <p className="text-sm leading-7 text-sand/75 md:text-base md:leading-8">
+                <p className="text-base leading-7 text-white md:text-lg md:leading-8">
                   {paragraph}
                 </p>
               </ScrollReveal>
