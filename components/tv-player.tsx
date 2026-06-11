@@ -246,6 +246,15 @@ export function TvPlayer() {
     [hasTracks, tracks.length, flashOsd, isOn, powerOnAndPlay],
   );
 
+  const handleTrackEnded = useCallback(() => {
+    if (!hasTracks) return;
+    if (currentIndex < tracks.length - 1) {
+      changeTrack(1);
+    } else {
+      setScreen("paused");
+    }
+  }, [hasTracks, currentIndex, tracks.length, changeTrack]);
+
   const stop = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
@@ -342,7 +351,7 @@ export function TvPlayer() {
           onPause={() => setScreen((s) => (s === "playing" ? "paused" : s))}
           onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
           onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-          onEnded={() => changeTrack(1)}
+          onEnded={handleTrackEnded}
         />
       )}
 
