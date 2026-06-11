@@ -683,7 +683,7 @@ html:has(#nav-menu-toggle:checked) #mobile-menu {
     z-index: 5;
     left: 27%;
     width: 30%;
-    bottom: 4%;
+    bottom: 3%;
     height: 124px;
     margin-top: 0;
     padding: 0.35rem 0.55rem;
