@@ -1,20 +1,11 @@
 "use client";
 
+import { scrollToMusicPlayer } from "@/lib/scroll-to-music";
+
 export function ListenCta() {
   const scrollToPlayer = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-
-    const controls = document.getElementById("player-controls");
-    const fallback = document.getElementById("music");
-    const target = controls ?? fallback;
-    if (!target) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({
-      behavior: reduced ? "auto" : "smooth",
-      block: "end",
-    });
-
+    scrollToMusicPlayer();
     history.replaceState(null, "", "#music");
   };
 

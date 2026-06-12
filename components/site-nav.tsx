@@ -1,4 +1,5 @@
 import { MobileNavLinks } from "@/components/mobile-nav-links";
+import { NavLink } from "@/components/nav-link";
 import { SocialLinks } from "@/components/social-links";
 import { navLinks, site } from "@/lib/site";
 
@@ -50,12 +51,12 @@ export function SiteNav() {
             <ul className="flex items-center gap-8 text-xs tracking-[0.2em] text-sand/80 uppercase">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <NavLink
                     href={link.href}
                     className="transition-colors hover:text-gold"
                   >
                     {link.label}
-                  </a>
+                  </NavLink>
                 </li>
               ))}
             </ul>

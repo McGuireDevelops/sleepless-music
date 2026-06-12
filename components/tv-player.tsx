@@ -433,7 +433,7 @@ export function TvPlayer() {
       <div className="vcr-scale">
       <div
         id="player-controls"
-        className="vcr scroll-mt-0 scroll-mb-4"
+        className="vcr scroll-mt-0 scroll-mb-[max(1rem,env(safe-area-inset-bottom))]"
         role="group"
         aria-label="VCR controls"
         data-on={isOn}
