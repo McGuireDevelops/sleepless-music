@@ -97,37 +97,37 @@ export function VhsOverlay() {
       const h = canvas.height;
       const progress = progressRef.current;
       // Always-on baseline so the static is visible immediately, then ramps up.
-      const intensity = 0.4 + progress * 0.45;
+      const intensity = 0.22 + progress * 0.28;
 
       const image = ctx.createImageData(w, h);
       const data = image.data;
-      const baseAlpha = 14 + intensity * 30;
-      const jitter = 18 * intensity;
+      const baseAlpha = 8 + intensity * 16;
+      const jitter = 10 * intensity;
 
       for (let i = 0; i < data.length; i += 4) {
-        const v = Math.random() * 255;
+        const v = 200 + Math.random() * 55;
         data[i] = v;
         data[i + 1] = v;
         data[i + 2] = v;
         data[i + 3] = baseAlpha + Math.random() * jitter;
       }
 
-      // Random glitch slices: brighter, displaced, occasionally color-tinted bands.
-      const sliceChance = 0.18 + progress * 0.35;
+      // Occasional thin glitch slices — mostly neutral, rarely color-tinted.
+      const sliceChance = 0.06 + progress * 0.12;
       if (Math.random() < sliceChance) {
-        const slices = 1 + Math.floor(Math.random() * (1 + progress * 2));
+        const slices = 1 + Math.floor(Math.random() * (1 + progress));
         for (let s = 0; s < slices; s++) {
-          const bandH = 1 + Math.floor(Math.random() * Math.max(2, h * 0.04));
+          const bandH = 1 + Math.floor(Math.random() * Math.max(2, h * 0.025));
           const y0 = Math.floor(Math.random() * h);
           const tint = Math.random();
-          const rBoost = tint > 0.66 ? 70 : 0;
-          const bBoost = tint < 0.33 ? 70 : 0;
-          const bandAlpha = 70 + Math.random() * 80;
+          const rBoost = tint > 0.92 ? 18 : 0;
+          const bBoost = tint < 0.08 ? 18 : 0;
+          const bandAlpha = 28 + Math.random() * 32;
 
           for (let y = y0; y < Math.min(h, y0 + bandH); y++) {
             for (let x = 0; x < w; x++) {
               const i = (y * w + x) * 4;
-              const v = 140 + Math.random() * 115;
+              const v = 170 + Math.random() * 70;
               data[i] = Math.min(255, v + rBoost);
               data[i + 1] = v;
               data[i + 2] = Math.min(255, v + bBoost);
@@ -159,6 +159,7 @@ export function VhsOverlay() {
       {!reducedMotion && (
         <canvas ref={canvasRef} className="vhs-overlay__noise" />
       )}
+      <div className="vhs-overlay__grain" />
       <div className="vhs-overlay__scanlines" />
       {!reducedMotion && (
         <>
