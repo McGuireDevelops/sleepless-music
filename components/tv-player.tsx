@@ -8,13 +8,14 @@ import {
   useRef,
   useState,
 } from "react";
+import { CrtWaveform } from "@/components/crt-waveform";
 import { site } from "@/lib/site";
+import { seekTimeFromX } from "@/lib/waveform";
 
 type ScreenState = "off" | "powering" | "no-signal" | "playing" | "paused";
 
 const POWER_ON_MS = 1100;
 const OSD_MS = 2200;
-const VU_BARS = 14;
 
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -27,31 +28,23 @@ export function TvPlayer() {
   const tracks = site.tracks;
   const hasTracks = tracks.length > 0;
   const audioRef = useRef<HTMLAudioElement>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const rafRef = useRef(0);
-  const vuSmoothRef = useRef<number[]>(new Array(VU_BARS).fill(0));
   const osdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const powerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   const [screen, setScreen] = useState<ScreenState>("off");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [volume, setVolume] = useState(0.8);
-  const volumeRef = useRef(volume);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [osdVisible, setOsdVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
-  const [levels, setLevels] = useState<number[]>(() =>
-    new Array(VU_BARS).fill(0),
-  );
 
   const isPlaying = screen === "playing";
   const isOn = screen !== "off";
   const tapeInSlot = screen === "playing" || screen === "paused";
+  const showWaveform = screen === "playing" || screen === "paused";
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -73,19 +66,12 @@ export function TvPlayer() {
     return () => {
       if (osdTimerRef.current) clearTimeout(osdTimerRef.current);
       if (powerTimerRef.current) clearTimeout(powerTimerRef.current);
-      cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
   useEffect(() => {
-    volumeRef.current = volume;
-    // Once routed through Web Audio, <audio>.volume is ignored — drive a GainNode.
-    if (gainRef.current) {
-      gainRef.current.gain.value = volume * volume;
-    } else {
-      const audio = audioRef.current;
-      if (audio) audio.volume = volume * volume;
-    }
+    const audio = audioRef.current;
+    if (audio) audio.volume = volume * volume;
   }, [volume]);
 
   const flashOsd = useCallback(() => {
@@ -94,111 +80,15 @@ export function TvPlayer() {
     osdTimerRef.current = setTimeout(() => setOsdVisible(false), OSD_MS);
   }, []);
 
-  const ensureAnalyser = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio || analyserRef.current) return;
-
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext;
-      if (!AudioCtx) return;
-
-      const ctx = new AudioCtx();
-      const source = ctx.createMediaElementSource(audio);
-      const gain = ctx.createGain();
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.72;
-      gain.gain.value = volumeRef.current * volumeRef.current;
-      source.connect(gain);
-      gain.connect(analyser);
-      analyser.connect(ctx.destination);
-
-      audioCtxRef.current = ctx;
-      sourceRef.current = source;
-      gainRef.current = gain;
-      analyserRef.current = analyser;
-    } catch {
-      // Analyser is a visual enhancement only; ignore failures.
-    }
-  }, []);
-
-  const stopVuLoop = useCallback(() => {
-    cancelAnimationFrame(rafRef.current);
-    vuSmoothRef.current = new Array(VU_BARS).fill(0);
-    setLevels(new Array(VU_BARS).fill(0));
-  }, []);
-
-  const startVuLoop = useCallback(() => {
-    const analyser = analyserRef.current;
-    if (!analyser) return;
-    const timeData = new Uint8Array(analyser.fftSize);
-    const freqData = new Uint8Array(analyser.frequencyBinCount);
-    const sliceLen = Math.floor(timeData.length / VU_BARS);
-
-    const tick = () => {
-      analyser.getByteTimeDomainData(timeData);
-      analyser.getByteFrequencyData(freqData);
-      const bins = freqData.length;
-
-      const next: number[] = [];
-      for (let i = 0; i < VU_BARS; i++) {
-        const tStart = i * sliceLen;
-        const tEnd = i === VU_BARS - 1 ? timeData.length : tStart + sliceLen;
-
-        let sumSq = 0;
-        let peak = 0;
-        for (let j = tStart; j < tEnd; j++) {
-          const sample = (timeData[j] - 128) / 128;
-          sumSq += sample * sample;
-          peak = Math.max(peak, Math.abs(sample));
-        }
-        const rms = Math.sqrt(sumSq / (tEnd - tStart));
-        const waveLevel = rms * 0.82 + peak * 0.18;
-
-        const fStart = Math.floor((bins ** (i / VU_BARS)) - 1);
-        const fEnd = Math.max(
-          fStart + 1,
-          Math.floor(bins ** ((i + 1) / VU_BARS)) - 1,
-        );
-        let fSum = 0;
-        for (let j = Math.max(0, fStart); j < Math.min(bins, fEnd); j++) {
-          fSum += freqData[j];
-        }
-        const bandCount = Math.max(1, Math.min(bins, fEnd) - Math.max(0, fStart));
-        const freqLevel = fSum / bandCount / 255;
-
-        const level = waveLevel * 0.65 + freqLevel * 0.35;
-        const target = Math.min(1, level * 2.5);
-        const prev = vuSmoothRef.current[i] ?? 0;
-        const coeff = target > prev ? 0.28 : 0.1;
-        const smoothed = prev + (target - prev) * coeff;
-        vuSmoothRef.current[i] = smoothed;
-        next.push(smoothed);
-      }
-
-      setLevels(next);
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(tick);
-  }, []);
-
   const playCurrent = useCallback(async () => {
     const audio = audioRef.current;
     if (!audio) return;
-    ensureAnalyser();
-    if (audioCtxRef.current?.state === "suspended") {
-      await audioCtxRef.current.resume().catch(() => {});
-    }
     try {
       await audio.play();
     } catch {
       setScreen((s) => (s === "playing" ? "paused" : s));
     }
-  }, [ensureAnalyser]);
+  }, []);
 
   const powerOnAndPlay = useCallback(() => {
     if (!hasTracks) return;
@@ -263,8 +153,29 @@ export function TvPlayer() {
     }
     setCurrentTime(0);
     setScreen("no-signal");
-    stopVuLoop();
-  }, [stopVuLoop]);
+  }, []);
+
+  const handleSeek = useCallback(
+    (seconds: number) => {
+      const audio = audioRef.current;
+      if (!audio || !hasTracks) return;
+      const wasPlaying = isPlaying;
+      audio.currentTime = seconds;
+      setCurrentTime(seconds);
+      flashOsd();
+      if (wasPlaying) void playCurrent();
+    },
+    [hasTracks, isPlaying, flashOsd, playCurrent],
+  );
+
+  const handleProgressSeek = useCallback(
+    (clientX: number) => {
+      const bar = progressRef.current;
+      if (!bar || duration <= 0) return;
+      handleSeek(seekTimeFromX(clientX, bar.getBoundingClientRect(), duration));
+    },
+    [duration, handleSeek],
+  );
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -275,22 +186,6 @@ export function TvPlayer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
-
-  useEffect(() => {
-    if (isPlaying) startVuLoop();
-    else stopVuLoop();
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [isPlaying, startVuLoop, stopVuLoop]);
-
-  useEffect(() => {
-    const onVisibility = () => {
-      if (document.hidden) cancelAnimationFrame(rafRef.current);
-      else if (isPlaying) startVuLoop();
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    return () =>
-      document.removeEventListener("visibilitychange", onVisibility);
-  }, [isPlaying, startVuLoop]);
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -345,7 +240,7 @@ export function TvPlayer() {
         <audio
           ref={audioRef}
           src={currentTrack?.src}
-          preload="none"
+          preload="metadata"
           crossOrigin="anonymous"
           onPlay={() => setScreen("playing")}
           onPause={() => setScreen((s) => (s === "playing" ? "paused" : s))}
@@ -355,185 +250,211 @@ export function TvPlayer() {
         />
       )}
 
-      {/* ── Photoreal scene + controls stage ── */}
       <div className="tv-stage">
-      {/* ── Photoreal scene with live CRT overlay ── */}
-      <div className="tv-scene">
-        <Image
-          src={site.tvSceneDesktop}
-          alt=""
-          width={1536}
-          height={1024}
-          className="tv-scene__img tv-scene__img--desktop"
-          sizes="(min-width: 75rem) 64rem, 0px"
-          priority={false}
-          aria-hidden
-        />
-        <Image
-          src={site.tvSceneMobile}
-          alt="Vintage television in a dark listening room"
-          width={1536}
-          height={1024}
-          className="tv-scene__img tv-scene__img--mobile"
-          sizes="(max-width: 74.99rem) 100vw, 0px"
-          priority={false}
-        />
-
-        <button
-          type="button"
-          className="crt"
-          style={screenStyle}
-          onClick={togglePlay}
-          aria-label={isPlaying ? "Pause" : isOn ? "Play" : "Power on and play"}
-        >
-          <span className="crt__static" aria-hidden />
-
-          <span className="crt__broadcast" aria-hidden>
-            <span className="crt__bars">
-              {levels.map((lvl, i) => (
-                <span
-                  key={i}
-                  className="crt__bar"
-                  style={{ "--lvl": lvl.toFixed(3) } as CSSProperties}
-                />
-              ))}
-            </span>
-          </span>
-
-          <span
-            className={`crt__osd ${osdVisible || isPlaying ? "crt__osd--visible" : ""}`}
+        <div className="tv-scene">
+          <Image
+            src={site.tvSceneDesktop}
+            alt=""
+            width={1536}
+            height={1024}
+            className="tv-scene__img tv-scene__img--desktop"
+            sizes="(min-width: 75rem) 64rem, 0px"
+            priority={false}
             aria-hidden
-          >
-            TRACK {trackNumber}
-          </span>
+          />
+          <Image
+            src={site.tvSceneMobile}
+            alt="Vintage television in a dark listening room"
+            width={1536}
+            height={1024}
+            className="tv-scene__img tv-scene__img--mobile"
+            sizes="(max-width: 74.99rem) 100vw, 0px"
+            priority={false}
+          />
 
-          {(screen === "playing" || screen === "paused") && (
-            <span className="crt__chyron" aria-hidden>
-              <span className="crt__chyron-label">Now Playing</span>
-              <span className="crt__chyron-title">{currentTrack?.title}</span>
+          <div className="crt" style={screenStyle}>
+            <span className="crt__static" aria-hidden />
+
+            <span className="crt__broadcast" aria-hidden>
+              {showWaveform && currentTrack && (
+                <CrtWaveform
+                  trackSrc={currentTrack.src}
+                  currentTime={currentTime}
+                  duration={duration}
+                  onSeek={handleSeek}
+                />
+              )}
             </span>
-          )}
 
-          {(screen === "off" || screen === "no-signal") && (
-            <span className="crt__cta" aria-hidden>
-              <span className="crt__cta-icon">▶</span>
-              <span className="crt__cta-text">
-                {hasTracks ? "Press Play" : "No Signal"}
+            <span
+              className={`crt__osd ${osdVisible || isPlaying ? "crt__osd--visible" : ""}`}
+              aria-hidden
+            >
+              TRACK {trackNumber}
+            </span>
+
+            {showWaveform && (
+              <span className="crt__chyron" aria-hidden>
+                <span className="crt__chyron-label">Now Playing</span>
+                <span className="crt__chyron-title">{currentTrack?.title}</span>
               </span>
-            </span>
-          )}
+            )}
 
-          <span className="crt__scanlines" aria-hidden />
-          <span className="crt__glass" aria-hidden />
-          {screen === "powering" && <span className="crt__powerline" aria-hidden />}
-        </button>
-      </div>
+            {(screen === "off" || screen === "no-signal") && (
+              <button
+                type="button"
+                className="crt__cta-btn"
+                onClick={powerOnAndPlay}
+                aria-label={hasTracks ? "Power on and play" : "No signal"}
+              >
+                <span className="crt__cta" aria-hidden>
+                  <span className="crt__cta-icon">▶</span>
+                  <span className="crt__cta-text">
+                    {hasTracks ? "Press Play" : "No Signal"}
+                  </span>
+                </span>
+              </button>
+            )}
 
-      {/* ── Visible, usable VCR control deck ── */}
-      <div className="vcr-scale">
-      <div
-        id="player-controls"
-        className="vcr scroll-mt-0 scroll-mb-[max(1rem,env(safe-area-inset-bottom))]"
-        role="group"
-        aria-label="VCR controls"
-        data-on={isOn}
-        data-playing={isPlaying}
-      >
-        <div className="vcr__deck">
-          <div className="vcr__slot" aria-hidden>
-            <div className="vcr__slot-bezel">
-              <div className="vcr__slot-mouth">
-                {tapeInSlot && (
-                  <div className="vcr__tape">
-                    <span className="vcr__tape-window">
-                      {currentTrack?.title ?? "DEMO REEL"}
-                    </span>
+            <span className="crt__scanlines" aria-hidden />
+            <span className="crt__glass" aria-hidden />
+            {screen === "powering" && (
+              <span className="crt__powerline" aria-hidden />
+            )}
+          </div>
+        </div>
+
+        <div className="vcr-scale">
+          <div
+            id="player-controls"
+            className="vcr scroll-mt-0 scroll-mb-[max(1rem,env(safe-area-inset-bottom))]"
+            role="group"
+            aria-label="VCR controls"
+            data-on={isOn}
+            data-playing={isPlaying}
+          >
+            <div className="vcr__deck">
+              <div className="vcr__slot" aria-hidden>
+                <div className="vcr__slot-bezel">
+                  <div className="vcr__slot-mouth">
+                    {tapeInSlot && (
+                      <div className="vcr__tape">
+                        <span className="vcr__tape-window">
+                          {currentTrack?.title ?? "DEMO REEL"}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
+              </div>
+
+              <span className="vcr__display" aria-hidden>
+                <span className="vcr__led" data-on={isPlaying} />
+                <span className="vcr__time">{formatTime(currentTime)}</span>
+              </span>
+            </div>
+
+            <div
+              ref={progressRef}
+              className="vcr__progress"
+              role="slider"
+              aria-label="Track progress"
+              aria-valuemin={0}
+              aria-valuemax={Math.round(duration)}
+              aria-valuenow={Math.round(currentTime)}
+              tabIndex={isOn ? 0 : -1}
+              onPointerDown={(e) => {
+                if (!isOn || duration <= 0) return;
+                handleProgressSeek(e.clientX);
+              }}
+              onKeyDown={(e) => {
+                if (!isOn || duration <= 0) return;
+                const step = duration * 0.05;
+                if (e.key === "ArrowRight") {
+                  e.preventDefault();
+                  handleSeek(Math.min(duration, currentTime + step));
+                } else if (e.key === "ArrowLeft") {
+                  e.preventDefault();
+                  handleSeek(Math.max(0, currentTime - step));
+                }
+              }}
+            >
+              <span
+                className="vcr__progress-fill"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            <div className="vcr__controls">
+              <button
+                type="button"
+                className="vcr-btn"
+                onClick={() => changeTrack(-1)}
+                disabled={!hasTracks}
+                aria-label="Previous track"
+              >
+                <span aria-hidden>◀◀</span>
+                <span className="vcr-btn__label">Rew</span>
+              </button>
+
+              <button
+                type="button"
+                className="vcr-btn vcr-btn--primary"
+                onClick={togglePlay}
+                disabled={!hasTracks}
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                <span aria-hidden>{isPlaying ? "❚❚" : "▶"}</span>
+                <span className="vcr-btn__label">
+                  {isPlaying ? "Pause" : "Play"}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="vcr-btn"
+                onClick={stop}
+                disabled={!hasTracks || !isOn}
+                aria-label="Stop"
+              >
+                <span aria-hidden>■</span>
+                <span className="vcr-btn__label">Stop</span>
+              </button>
+
+              <button
+                type="button"
+                className="vcr-btn"
+                onClick={() => changeTrack(1)}
+                disabled={!hasTracks}
+                aria-label="Next track"
+              >
+                <span aria-hidden>▶▶</span>
+                <span className="vcr-btn__label">FF</span>
+              </button>
+
+              <div className="vcr-knob">
+                <span
+                  className="vcr-knob__dial"
+                  style={{ "--angle": `${volumeAngle}deg` } as CSSProperties}
+                  aria-hidden
+                >
+                  <span className="vcr-knob__indicator" />
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={volume}
+                  onChange={(e) => setVolume(Number(e.target.value))}
+                  className="vcr-knob__input"
+                  aria-label="Volume"
+                />
+                <span className="vcr-knob__label">Vol</span>
               </div>
             </div>
           </div>
-
-          <span className="vcr__display" aria-hidden>
-            <span className="vcr__led" data-on={isPlaying} />
-            <span className="vcr__time">
-              {formatTime(currentTime)}
-            </span>
-          </span>
         </div>
-
-        <div className="vcr__progress" aria-hidden>
-          <span className="vcr__progress-fill" style={{ width: `${progress}%` }} />
-        </div>
-
-        <div className="vcr__controls">
-          <button
-            type="button"
-            className="vcr-btn"
-            onClick={() => changeTrack(-1)}
-            disabled={!hasTracks}
-            aria-label="Previous track"
-          >
-            <span aria-hidden>◀◀</span>
-            <span className="vcr-btn__label">Rew</span>
-          </button>
-
-          <button
-            type="button"
-            className="vcr-btn vcr-btn--primary"
-            onClick={togglePlay}
-            disabled={!hasTracks}
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            <span aria-hidden>{isPlaying ? "❚❚" : "▶"}</span>
-            <span className="vcr-btn__label">{isPlaying ? "Pause" : "Play"}</span>
-          </button>
-
-          <button
-            type="button"
-            className="vcr-btn"
-            onClick={stop}
-            disabled={!hasTracks || !isOn}
-            aria-label="Stop"
-          >
-            <span aria-hidden>■</span>
-            <span className="vcr-btn__label">Stop</span>
-          </button>
-
-          <button
-            type="button"
-            className="vcr-btn"
-            onClick={() => changeTrack(1)}
-            disabled={!hasTracks}
-            aria-label="Next track"
-          >
-            <span aria-hidden>▶▶</span>
-            <span className="vcr-btn__label">FF</span>
-          </button>
-
-          <div className="vcr-knob">
-            <span
-              className="vcr-knob__dial"
-              style={{ "--angle": `${volumeAngle}deg` } as CSSProperties}
-              aria-hidden
-            >
-              <span className="vcr-knob__indicator" />
-            </span>
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              value={volume}
-              onChange={(e) => setVolume(Number(e.target.value))}
-              className="vcr-knob__input"
-              aria-label="Volume"
-            />
-            <span className="vcr-knob__label">Vol</span>
-          </div>
-        </div>
-      </div>
-      </div>
       </div>
     </div>
   );

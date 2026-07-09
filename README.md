@@ -23,6 +23,8 @@ on-screen controls actually work.
 1. Drop track files into [`public/audio/`](public/audio/) (MP3/WAV).
 2. List them in order in the `tracks` array in `lib/site.ts`, each with a
    `title` and a `src` path (e.g. `/audio/track-01.mp3`).
+3. Run `npm run generate:waveforms` to build CRT waveform peak data (`.peaks.json`
+   files alongside each WAV).
 
 Until audio files exist the TV shows a "NO SIGNAL" state.
 

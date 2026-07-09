@@ -9,7 +9,8 @@
     "lint": "eslint",
     "generate:favicons": "node scripts/generate-favicons.mjs",
     "generate:images": "node scripts/generate-images.mjs",
-    "generate:assets": "npm run generate:images && npm run generate:favicons"
+    "generate:assets": "npm run generate:images && npm run generate:favicons",
+    "generate:waveforms": "node scripts/generate-waveforms.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
