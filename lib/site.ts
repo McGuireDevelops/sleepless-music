@@ -33,7 +33,6 @@ export const site = {
   tracks: [
     { title: "In Space", src: "/audio/in-space.wav" },
     { title: "Heavy Is The Crown", src: "/audio/heavy-is-the-crown.wav" },
-    { title: "Adrift", src: "/audio/adrift.wav" },
     { title: "The Collapse", src: "/audio/the-collapse.wav" },
   ],
   socialImage: "/og-share.png",
