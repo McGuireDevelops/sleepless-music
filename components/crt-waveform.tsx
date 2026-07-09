@@ -19,6 +19,23 @@ type CrtWaveformProps = {
   onSeek: (seconds: number) => void;
 };
 
+/** Downsample peaks to roughly one point per ~2px of canvas width. */
+function resamplePeaks(peaks: number[], targetCount: number): number[] {
+  if (targetCount >= peaks.length) return peaks;
+  const out: number[] = [];
+  const bucketSize = peaks.length / targetCount;
+  for (let i = 0; i < targetCount; i++) {
+    const start = Math.floor(i * bucketSize);
+    const end = Math.floor((i + 1) * bucketSize);
+    let max = 0;
+    for (let j = start; j < end; j++) {
+      max = Math.max(max, peaks[j] ?? 0);
+    }
+    out.push(max);
+  }
+  return out;
+}
+
 export function CrtWaveform({
   trackSrc,
   currentTime,
@@ -49,31 +66,63 @@ export function CrtWaveform({
 
     ctx.clearRect(0, 0, w, h);
 
-    const barCount = peaks.peaks.length;
-    const gap = Math.max(1, Math.floor(dpr));
-    const barWidth = Math.max(1, (w - gap * (barCount - 1)) / barCount);
+    const targetCount = Math.max(48, Math.floor(w / 2));
+    const samples = resamplePeaks(peaks.peaks, targetCount);
+    const count = samples.length;
     const midY = h / 2;
+    const amp = h * 0.44;
     const progress =
       duration > 0 ? Math.min(1, currentTime / duration) : 0;
     const playheadX = progress * w;
 
-    for (let i = 0; i < barCount; i++) {
-      const peak = peaks.peaks[i];
-      const barH = Math.max(dpr * 2, peak * (h * 0.82));
-      const x = i * (barWidth + gap);
-      const played = x + barWidth / 2 <= playheadX;
+    const topPath = new Path2D();
+    const bottomPath = new Path2D();
 
-      ctx.fillStyle = played
-        ? "rgba(220, 235, 255, 0.95)"
-        : "rgba(120, 170, 220, 0.42)";
-      ctx.fillRect(x, midY - barH / 2, barWidth, barH);
+    for (let i = 0; i < count; i++) {
+      const x = count === 1 ? 0 : (i / (count - 1)) * w;
+      const y = samples[i] * amp;
+      if (i === 0) {
+        topPath.moveTo(x, midY - y);
+        bottomPath.moveTo(x, midY + y);
+      } else {
+        topPath.lineTo(x, midY - y);
+        bottomPath.lineTo(x, midY + y);
+      }
     }
+
+    const shape = new Path2D();
+    shape.addPath(topPath);
+    shape.lineTo(w, midY);
+    for (let i = count - 1; i >= 0; i--) {
+      const x = count === 1 ? 0 : (i / (count - 1)) * w;
+      shape.lineTo(x, midY + samples[i] * amp);
+    }
+    shape.closePath();
+
+    ctx.fillStyle = "rgba(90, 140, 200, 0.4)";
+    ctx.fill(shape);
+    ctx.strokeStyle = "rgba(120, 170, 220, 0.55)";
+    ctx.lineWidth = Math.max(1, dpr * 0.75);
+    ctx.lineJoin = "round";
+    ctx.stroke(topPath);
+    ctx.stroke(bottomPath);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, playheadX, h);
+    ctx.clip();
+    ctx.fillStyle = "rgba(210, 230, 255, 0.92)";
+    ctx.fill(shape);
+    ctx.strokeStyle = "rgba(230, 245, 255, 0.95)";
+    ctx.stroke(topPath);
+    ctx.stroke(bottomPath);
+    ctx.restore();
 
     ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
     ctx.lineWidth = Math.max(1, dpr);
     ctx.beginPath();
-    ctx.moveTo(playheadX, h * 0.06);
-    ctx.lineTo(playheadX, h * 0.94);
+    ctx.moveTo(playheadX, h * 0.04);
+    ctx.lineTo(playheadX, h * 0.96);
     ctx.stroke();
   }, [currentTime, duration]);
 
@@ -112,7 +161,11 @@ export function CrtWaveform({
       if (!canvas || !peaks) return;
 
       const dur = duration > 0 ? duration : peaks.duration;
-      const seconds = seekTimeFromX(e.clientX, canvas.getBoundingClientRect(), dur);
+      const seconds = seekTimeFromX(
+        e.clientX,
+        canvas.getBoundingClientRect(),
+        dur,
+      );
       onSeek(seconds);
     },
     [duration, onSeek],

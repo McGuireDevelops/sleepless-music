@@ -123,10 +123,12 @@ for (const { src } of tracks) {
   const buffer = readFileSync(wavPath);
   const fmt = parseWav(buffer);
   const peaks = computePeaks(buffer, fmt, BUCKETS);
+  const maxPeak = Math.max(...peaks, 0.001);
+  const normalized = peaks.map((p) => Math.round((p / maxPeak) * 1000) / 1000);
 
   const output = {
     duration: Math.round(fmt.duration * 1000) / 1000,
-    peaks,
+    peaks: normalized,
   };
 
   writeFileSync(peaksPath, `${JSON.stringify(output)}\n`);
